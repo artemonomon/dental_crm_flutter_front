@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'features/auth/auth.dart';
+import 'router/router.dart';
 
 class DentalCrmApp extends StatelessWidget {
   const DentalCrmApp({super.key});
@@ -14,7 +13,7 @@ class DentalCrmApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const LoginScreen(),
+      routes: routes,
     );
   }
 }

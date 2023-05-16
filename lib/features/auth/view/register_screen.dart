@@ -3,14 +3,14 @@ import 'package:dental_crm_flutter_front/utils/utils.dart';
 import 'package:dental_crm_flutter_front/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -69,13 +69,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       children: [
                         SizedBox(
                             height: ResponsiveWidget.isSmallScreen(context)
-                                ? height * 0.15
-                                : height * 0.2),
+                                ? height * 0.13
+                                : height * 0.18),
                         RichText(
                           text: TextSpan(
                             children: [
                               TextSpan(
-                                text: 'Вхід до',
+                                text: 'Зареєструйтеся до',
                                 style: AppStyles.ralewayStyle.copyWith(
                                     fontSize: 35.0,
                                     color: AppColors.blueDarkColor,
@@ -94,7 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         Text(
                           ResponsiveWidget.isSmallScreen(context)
                               ? 'Введіть пошту та ваш пароль для того, щоб зайти до особистого кабінету'
-                              : 'Введіть пошту та ваш пароль для того,\nщоб зайти до особистого кабінету',
+                              : 'Введіть ваше ім\'я, пошту та ваш пароль для того, \nщоб зареєструватися до особистого кабінету',
                           style: AppStyles.ralewayStyle.copyWith(
                             fontSize: 18.0,
                             fontWeight: FontWeight.w400,
@@ -105,7 +105,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         Row(
                           children: [
                             Text(
-                              'Не зареєстровані?',
+                              'Вже зареєстровані?',
                               style: AppStyles.ralewayStyle.copyWith(
                                 fontSize: 18.0,
                                 fontWeight: FontWeight.w400,
@@ -114,10 +114,10 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             TextButton(
                               onPressed: () {
-                                Navigator.of(context).pushNamed('/register');
+                                Navigator.of(context).pop();
                               },
                               child: Text(
-                                'Зареєструватися',
+                                'Увійти в особистий кабінет',
                                 style: AppStyles.ralewayStyle.copyWith(
                                   fontSize: 18.0,
                                   color: AppColors.mainBlueColor,
@@ -128,6 +128,25 @@ class _LoginScreenState extends State<LoginScreen> {
                           ],
                         ),
                         SizedBox(height: height * 0.064),
+                        Padding(
+                          padding:
+                              const EdgeInsets.only(left: 20.0, bottom: 10.0),
+                          child: Text(
+                            'Ваше ім\'я',
+                            style: AppStyles.ralewayStyle.copyWith(
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.textColor,
+                            ),
+                          ),
+                        ),
+                        FormTextField(
+                          height: height,
+                          width: width,
+                          hintText: 'Ім\'я',
+                          icon: const Icon(Icons.account_box_outlined),
+                        ),
+                        SizedBox(height: height * 0.015),
                         Padding(
                           padding:
                               const EdgeInsets.only(left: 20.0, bottom: 10.0),
@@ -167,21 +186,19 @@ class _LoginScreenState extends State<LoginScreen> {
                           suffixIcon: const Icon(Icons.remove_red_eye_outlined),
                         ),
                         SizedBox(height: height * 0.015),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            TextButton(
-                              onPressed: () {},
-                              child: Text(
-                                'Забули пароль?',
-                                style: AppStyles.ralewayStyle.copyWith(
-                                  fontSize: 18.0,
-                                  color: AppColors.mainBlueColor,
-                                  fontWeight: FontWeight.w700,
-                                ),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: TextButton(
+                            onPressed: () {},
+                            child: Text(
+                              'Забули пароль?',
+                              style: AppStyles.ralewayStyle.copyWith(
+                                fontSize: 18.0,
+                                color: AppColors.mainBlueColor,
+                                fontWeight: FontWeight.w700,
                               ),
                             ),
-                          ],
+                          ),
                         ),
                         SizedBox(height: height * 0.05),
                         const AuthButton(
