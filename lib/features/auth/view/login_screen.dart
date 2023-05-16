@@ -1,6 +1,6 @@
-import 'package:dental_crm_flutter_front/app_colors.dart';
-import 'package:dental_crm_flutter_front/app_styles.dart';
-import 'package:dental_crm_flutter_front/responsive_widget.dart';
+import 'package:dental_crm_flutter_front/features/auth/widgets/widgets.dart';
+import 'package:dental_crm_flutter_front/utils/utils.dart';
+import 'package:dental_crm_flutter_front/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -114,37 +114,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                         ),
-                        Container(
-                          height: height * 0.06,
+                        FormTextField(
+                          height: height,
                           width: width,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(16.0),
-                              color: AppColors.whiteColor),
-                          alignment: Alignment.center,
-                          child: Padding(
-                            padding: ResponsiveWidget.isSmallScreen(context)
-                                ? const EdgeInsets.all(0)
-                                : const EdgeInsets.all(8.0),
-                            child: TextFormField(
-                              style: AppStyles.ralewayStyle.copyWith(
-                                  fontSize: 18.0,
-                                  color: AppColors.blueDarkColor,
-                                  fontWeight: FontWeight.w400),
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                prefixIcon: IconButton(
-                                  onPressed: () {},
-                                  icon: const Icon(Icons.email_outlined),
-                                ),
-                                hintText: 'Е-пошта',
-                                hintStyle: AppStyles.ralewayStyle.copyWith(
-                                    fontSize: 18.0,
-                                    color: AppColors.blueDarkColor
-                                        .withOpacity(0.5),
-                                    fontWeight: FontWeight.w400),
-                              ),
-                            ),
-                          ),
+                          hintText: 'Е-пошта',
+                          icon: const Icon(Icons.email_outlined),
                         ),
                         SizedBox(height: height * 0.015),
                         Padding(
@@ -159,43 +133,12 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                         ),
-                        Container(
-                          height: height * 0.06,
+                        FormPasswordField(
+                          height: height,
                           width: width,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(16.0),
-                              color: AppColors.whiteColor),
-                          alignment: Alignment.center,
-                          child: Padding(
-                            padding: ResponsiveWidget.isSmallScreen(context)
-                                ? const EdgeInsets.all(0)
-                                : const EdgeInsets.all(8.0),
-                            child: TextFormField(
-                              obscureText: true,
-                              style: AppStyles.ralewayStyle.copyWith(
-                                  fontSize: 18.0,
-                                  color: AppColors.blueDarkColor,
-                                  fontWeight: FontWeight.w400),
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                prefixIcon: IconButton(
-                                  onPressed: () {},
-                                  icon: const Icon(Icons.lock),
-                                ),
-                                suffixIcon: IconButton(
-                                  onPressed: () {},
-                                  icon:
-                                      const Icon(Icons.remove_red_eye_outlined),
-                                ),
-                                hintText: 'Ваш пароль',
-                                hintStyle: AppStyles.ralewayStyle.copyWith(
-                                    fontSize: 18.0,
-                                    color: AppColors.blueDarkColor
-                                        .withOpacity(0.5),
-                                    fontWeight: FontWeight.w400),
-                              ),
-                            ),
-                          ),
+                          hintText: 'Пароль',
+                          prefixIcon: const Icon(Icons.lock),
+                          suffixIcon: const Icon(Icons.remove_red_eye_outlined),
                         ),
                         SizedBox(height: height * 0.015),
                         Align(
@@ -213,28 +156,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         SizedBox(height: height * 0.05),
-                        Material(
-                          color: Colors.transparent,
-                          child: InkWell(
-                            onTap: () {},
-                            borderRadius: BorderRadius.circular(16.0),
-                            child: Ink(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 70.0, vertical: 18.0),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(16.0),
-                                color: AppColors.mainBlueColor,
-                              ),
-                              child: Text(
-                                'Увійти',
-                                style: AppStyles.ralewayStyle.copyWith(
-                                  fontSize: 20.0,
-                                  color: AppColors.whiteColor,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                            ),
-                          ),
+                        const AuthButton(
+                          text: 'Увійти',
+                          color: AppColors.mainBlueColor,
                         )
                       ],
                     ),
