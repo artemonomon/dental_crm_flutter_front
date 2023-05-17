@@ -1,8 +1,9 @@
 # СРМ-система для стоматологічного кабінету
 
+# [Посилання на інсталяційний пакет на андроїд](https://drive.google.com/file/d/1hKT4NXai9MHtFdkRuuaiPoWyukaXo7EV/view?usp=sharing)
+
 # [Посилання на інсталяційний пакет на windows](https://drive.google.com/file/d/1mrB0xutF_EDzTHGBTXoyCrYIRE9WP6wz/view?usp=sharing)
 
-# [Посилання на інсталяційний пакет на андроїд](https://drive.google.com/file/d/1hKT4NXai9MHtFdkRuuaiPoWyukaXo7EV/view?usp=sharing)
 # Dental CRM Flutter Front
 
 Ласкаво просимо до Dental CRM Flutter Front! Цей репозиторій містить вихідний код фронтенду для додатку управління взаєминами з клієнтами стоматологічних клінік (CRM), побудований за допомогою Flutter.
