@@ -1,5 +1,7 @@
 # СРМ-система для стоматологічного кабінету
 
+# [Посилання на інсталяційний пакет на windows](https://drive.google.com/file/d/1mrB0xutF_EDzTHGBTXoyCrYIRE9WP6wz/view?usp=sharing)
+
 # [Посилання на інсталяційний пакет на андроїд](https://drive.google.com/file/d/1hKT4NXai9MHtFdkRuuaiPoWyukaXo7EV/view?usp=sharing)
 # Dental CRM Flutter Front
 
@@ -7,6 +9,7 @@
 
 ## Зміст
 - [СРМ-система для стоматологічного кабінету](#срм-система-для-стоматологічного-кабінету)
+- [Посилання на інсталяційний пакет на windows](#посилання-на-інсталяційний-пакет-на-windows)
 - [Посилання на інсталяційний пакет на андроїд](#посилання-на-інсталяційний-пакет-на-андроїд)
 - [Dental CRM Flutter Front](#dental-crm-flutter-front)
   - [Зміст](#зміст)
