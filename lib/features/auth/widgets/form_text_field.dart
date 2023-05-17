@@ -9,13 +9,15 @@ class FormTextField extends StatelessWidget {
       required this.width,
       this.hintText,
       this.icon,
-      this.obscureText});
+      this.obscureText,
+      this.controller});
 
   final double height;
   final double width;
   final String? hintText;
   final Icon? icon;
   final bool? obscureText;
+  final TextEditingController? controller;
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +33,7 @@ class FormTextField extends StatelessWidget {
             ? const EdgeInsets.all(0)
             : const EdgeInsets.all(8.0),
         child: TextFormField(
+          controller: controller,
           style: AppStyles.ralewayStyle.copyWith(
               fontSize: 18.0,
               color: AppColors.blueDarkColor,

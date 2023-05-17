@@ -1,7 +1,12 @@
+import 'package:dental_crm_flutter_front/features/auth/bloc/auth_bloc.dart';
 import 'package:dental_crm_flutter_front/features/auth/widgets/widgets.dart';
+import 'package:dental_crm_flutter_front/repositories/auth/auth_repository.dart';
+import 'package:dental_crm_flutter_front/repositories/auth/models/models.dart';
 import 'package:dental_crm_flutter_front/utils/utils.dart';
 import 'package:dental_crm_flutter_front/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:motion_toast/motion_toast.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -11,6 +16,25 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  AuthRepository authRepository = AuthRepository();
+  late AuthBloc authBloc;
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+
+  @override
+  void initState() {
+    authBloc = AuthBloc(authRepository);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    authBloc.close();
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -43,7 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     fontWeight: FontWeight.w800),
                               ),
                               Text(
-                                'Дентас',
+                                '',
                                 style: AppStyles.ralewayStyle.copyWith(
                                     fontSize: 48.0,
                                     color: AppColors.whiteColor,
@@ -55,142 +79,190 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
               Expanded(
-                child: SingleChildScrollView(
-                  child: Container(
-                    height: height,
-                    margin: EdgeInsets.symmetric(
-                        horizontal: ResponsiveWidget.isSmallScreen(context)
-                            ? height * 0.032
-                            : height * 0.12),
-                    color: AppColors.backColor,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                            height: ResponsiveWidget.isSmallScreen(context)
-                                ? height * 0.15
-                                : height * 0.2),
-                        RichText(
-                          text: TextSpan(
-                            children: [
-                              TextSpan(
-                                text: 'Вхід до',
-                                style: AppStyles.ralewayStyle.copyWith(
-                                    fontSize: 35.0,
-                                    color: AppColors.blueDarkColor,
-                                    fontWeight: FontWeight.normal),
-                              ),
-                              TextSpan(
-                                  text: ' особистого кабінету',
-                                  style: AppStyles.ralewayStyle.copyWith(
-                                      fontSize: 35.0,
-                                      color: AppColors.blueDarkColor,
-                                      fontWeight: FontWeight.w800))
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: height * 0.02),
-                        Text(
-                          ResponsiveWidget.isSmallScreen(context)
-                              ? 'Введіть пошту та ваш пароль для того, щоб зайти до особистого кабінету'
-                              : 'Введіть пошту та ваш пароль для того,\nщоб зайти до особистого кабінету',
-                          style: AppStyles.ralewayStyle.copyWith(
-                            fontSize: 18.0,
-                            fontWeight: FontWeight.w400,
-                            color: AppColors.textColor,
-                          ),
-                        ),
-                        SizedBox(height: height * 0.02),
-                        Row(
+                child: BlocProvider(
+                  create: (context) => authBloc,
+                  child: SingleChildScrollView(
+                      child: BlocConsumer<AuthBloc, AuthState>(
+                    listener: (context, state) {
+                      if (state is AuthSuccess) {
+                        // Authentication successful, handle the response
+                        final response = state.response;
+                        Navigator.of(context).pushNamed('/main');
+                        print('Login is successful: $response');
+                      } else if (state is AuthFailure) {
+                        // Authentication failed, show error message
+                        final error = state.error;
+                        MotionToast.error(
+                                title: Text("Щось пішло не так"),
+                                description:
+                                    Text("Перeвірте чи все ви ввели правильно"))
+                            .show(context);
+                        print(error);
+                      }
+                    },
+                    builder: (context, state) {
+                      if (state is AuthLoading) {
+                        // Show loading indicator
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                      return Container(
+                        height: height,
+                        margin: EdgeInsets.symmetric(
+                            horizontal: ResponsiveWidget.isSmallScreen(context)
+                                ? height * 0.032
+                                : height * 0.12),
+                        color: AppColors.backColor,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
+                            SizedBox(
+                                height: ResponsiveWidget.isSmallScreen(context)
+                                    ? height * 0.15
+                                    : height * 0.2),
+                            RichText(
+                              text: TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: 'Вхід до',
+                                    style: AppStyles.ralewayStyle.copyWith(
+                                        fontSize: 35.0,
+                                        color: AppColors.blueDarkColor,
+                                        fontWeight: FontWeight.normal),
+                                  ),
+                                  TextSpan(
+                                      text: ' особистого кабінету',
+                                      style: AppStyles.ralewayStyle.copyWith(
+                                          fontSize: 35.0,
+                                          color: AppColors.blueDarkColor,
+                                          fontWeight: FontWeight.w800))
+                                ],
+                              ),
+                            ),
+                            SizedBox(height: height * 0.02),
                             Text(
-                              'Не зареєстровані?',
+                              ResponsiveWidget.isSmallScreen(context)
+                                  ? 'Введіть пошту та ваш пароль для того, щоб зайти до особистого кабінету'
+                                  : 'Введіть пошту та ваш пароль для того,\nщоб зайти до особистого кабінету',
                               style: AppStyles.ralewayStyle.copyWith(
                                 fontSize: 18.0,
                                 fontWeight: FontWeight.w400,
                                 color: AppColors.textColor,
                               ),
                             ),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pushNamed('/register');
+                            SizedBox(height: height * 0.02),
+                            Row(
+                              children: [
+                                Text(
+                                  'Не зареєстровані?',
+                                  style: AppStyles.ralewayStyle.copyWith(
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.w400,
+                                    color: AppColors.textColor,
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context)
+                                        .pushNamed('/register');
+                                  },
+                                  child: Text(
+                                    'Зареєструватися',
+                                    style: AppStyles.ralewayStyle.copyWith(
+                                      fontSize: 18.0,
+                                      color: AppColors.mainBlueColor,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: height * 0.064),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 20.0, bottom: 10.0),
+                              child: Text(
+                                'Е-пошта',
+                                style: AppStyles.ralewayStyle.copyWith(
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.textColor,
+                                ),
+                              ),
+                            ),
+                            FormTextField(
+                              controller: _emailController,
+                              height: height,
+                              width: width,
+                              hintText: 'Е-пошта',
+                              icon: const Icon(Icons.email_outlined),
+                            ),
+                            SizedBox(height: height * 0.015),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 20.0, bottom: 10.0),
+                              child: Text(
+                                'Пароль',
+                                style: AppStyles.ralewayStyle.copyWith(
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.textColor,
+                                ),
+                              ),
+                            ),
+                            FormPasswordField(
+                              controller: _passwordController,
+                              height: height,
+                              width: width,
+                              hintText: 'Пароль',
+                              prefixIcon: const Icon(Icons.lock),
+                              suffixIcon:
+                                  const Icon(Icons.remove_red_eye_outlined),
+                            ),
+                            SizedBox(height: height * 0.015),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                TextButton(
+                                  onPressed: () {},
+                                  child: Text(
+                                    'Забули пароль?',
+                                    style: AppStyles.ralewayStyle.copyWith(
+                                      fontSize: 18.0,
+                                      color: AppColors.mainBlueColor,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: height * 0.05),
+                            AuthButton(
+                              text: 'Увійти',
+                              color: AppColors.mainBlueColor,
+                              onTap: () async {
+                                final loginRequest = LoginRequest(
+                                  email: _emailController.text,
+                                  password: _passwordController.text,
+                                );
+                                context
+                                    .read<AuthBloc>()
+                                    .add(LoginEvent(loginRequest));
+                                // final email = _emailController.text;
+                                // final password = _passwordController.text;
+
+                                // final loginRequest = LoginRequest(
+                                //     email: email, password: password);
+                                // authBloc.add(LoginEvent(loginRequest));
                               },
-                              child: Text(
-                                'Зареєструватися',
-                                style: AppStyles.ralewayStyle.copyWith(
-                                  fontSize: 18.0,
-                                  color: AppColors.mainBlueColor,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ),
+                            )
                           ],
                         ),
-                        SizedBox(height: height * 0.064),
-                        Padding(
-                          padding:
-                              const EdgeInsets.only(left: 20.0, bottom: 10.0),
-                          child: Text(
-                            'Е-пошта',
-                            style: AppStyles.ralewayStyle.copyWith(
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.textColor,
-                            ),
-                          ),
-                        ),
-                        FormTextField(
-                          height: height,
-                          width: width,
-                          hintText: 'Е-пошта',
-                          icon: const Icon(Icons.email_outlined),
-                        ),
-                        SizedBox(height: height * 0.015),
-                        Padding(
-                          padding:
-                              const EdgeInsets.only(left: 20.0, bottom: 10.0),
-                          child: Text(
-                            'Пароль',
-                            style: AppStyles.ralewayStyle.copyWith(
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.w700,
-                              color: AppColors.textColor,
-                            ),
-                          ),
-                        ),
-                        FormPasswordField(
-                          height: height,
-                          width: width,
-                          hintText: 'Пароль',
-                          prefixIcon: const Icon(Icons.lock),
-                          suffixIcon: const Icon(Icons.remove_red_eye_outlined),
-                        ),
-                        SizedBox(height: height * 0.015),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            TextButton(
-                              onPressed: () {},
-                              child: Text(
-                                'Забули пароль?',
-                                style: AppStyles.ralewayStyle.copyWith(
-                                  fontSize: 18.0,
-                                  color: AppColors.mainBlueColor,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: height * 0.05),
-                        const AuthButton(
-                          text: 'Увійти',
-                          color: AppColors.mainBlueColor,
-                        )
-                      ],
-                    ),
-                  ),
+                      );
+                    },
+                  )),
                 ),
               )
             ],

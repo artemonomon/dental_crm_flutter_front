@@ -10,6 +10,7 @@ class FormPasswordField extends StatelessWidget {
     this.prefixIcon,
     this.suffixIcon,
     this.hintText,
+    this.controller,
   });
 
   final double height;
@@ -17,6 +18,7 @@ class FormPasswordField extends StatelessWidget {
   final Icon? prefixIcon;
   final Icon? suffixIcon;
   final String? hintText;
+  final TextEditingController? controller;
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +34,7 @@ class FormPasswordField extends StatelessWidget {
             ? const EdgeInsets.all(0)
             : const EdgeInsets.all(8.0),
         child: TextFormField(
+          controller: controller,
           obscureText: true,
           style: AppStyles.ralewayStyle.copyWith(
               fontSize: 18.0,
