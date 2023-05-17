@@ -111,7 +111,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         height: height,
                         margin: EdgeInsets.symmetric(
                             horizontal: ResponsiveWidget.isSmallScreen(context)
-                                ? height * 0.032
+                                ? height * 0.02
                                 : height * 0.12),
                         color: AppColors.backColor,
                         child: Column(
@@ -153,7 +153,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
                             SizedBox(height: height * 0.02),
-                            Row(
+                            Column(
                               children: [
                                 Text(
                                   'Не зареєстровані?',

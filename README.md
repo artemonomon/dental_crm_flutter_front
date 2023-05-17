@@ -1,37 +1,57 @@
 # СРМ-система для стоматологічного кабінету
 
 # [Посилання на інсталяційний пакет на андроїд](https://drive.google.com/file/d/1hKT4NXai9MHtFdkRuuaiPoWyukaXo7EV/view?usp=sharing)
-
 # Dental CRM Flutter Front
 
-Welcome to Dental CRM Flutter Front! This repository contains the frontend code for a dental customer relationship management (CRM) application built using Flutter.
+Ласкаво просимо до Dental CRM Flutter Front! Цей репозиторій містить вихідний код фронтенду для додатку управління взаєминами з клієнтами стоматологічних клінік (CRM), побудований за допомогою Flutter.
 
-## Table of Contents
-- [Introduction](#introduction)
-- [Features](#features)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Contributing](#contributing)
-- [License](#license)
+## Зміст
+- [СРМ-система для стоматологічного кабінету](#срм-система-для-стоматологічного-кабінету)
+- [Посилання на інсталяційний пакет на андроїд](#посилання-на-інсталяційний-пакет-на-андроїд)
+- [Dental CRM Flutter Front](#dental-crm-flutter-front)
+  - [Зміст](#зміст)
+  - [Вступ](#вступ)
+  - [Функціонал](#функціонал)
+  - [Встановлення](#встановлення)
+  - [Використання](#використання)
+  - [Співпраця](#співпраця)
+  - [Ліцензія](#ліцензія)
 
-## Introduction
-Dental CRM Flutter Front is a user-friendly application that helps dental clinics manage their customer relationships efficiently. It provides a smooth and intuitive user interface for both dental clinic staff and patients.
+## Вступ
+Dental CRM Flutter Front - це додаток з інтуїтивно зрозумілим і зручним інтерфейсом, який допомагає стоматологічним клінікам ефективно управляти взаєминами з клієнтами. Він надає зручний і простий інтерфейс користувача як для персоналу клініки, так і для пацієнтів.
 
-This repository contains the frontend code written in Flutter, a popular cross-platform framework for building beautiful and native-looking mobile applications. The frontend communicates with the backend server to retrieve and update data related to patients, appointments, treatments, and more.
+У цьому репозиторії міститься вихідний код фронтенду, написаний на Flutter, популярному кросплатформному фреймворку для створення красивих і нативних за виглядом мобільних додатків. Фронтенд взаємодіє з сервером, щоб отримувати та оновлювати дані, пов'язані з пацієнтами, записами на прийом, лікуванням та іншими.
 
-## Features
-- **User Authentication**: Secure login and registration functionality for both dental clinic staff and patients.
-- **Appointment Management**: View, schedule, and manage appointments for patients.
-- **Patient Profiles**: Maintain detailed profiles for each patient, including contact information, medical history, and treatment records.
-- **Treatment Tracking**: Keep track of patient treatments, including progress, prescriptions, and billing details.
-- **Notifications**: Receive notifications for upcoming appointments and other important updates.
-- **Search and Filters**: Efficiently search and filter patient records based on various criteria.
-- **Responsive UI**: The application is designed to work smoothly on both mobile devices and tablets.
+## Функціонал
+- **Аутентифікація користувача**: Безпечна функціональність входу та реєстрації для персоналу стоматологічної клініки та пацієнтів.
+- **Управління записами на прийом**: Перегляд, планування та керування записами на прийом для пацієнтів.
+- **Профілі пацієнтів**: Ведення докладних профілів для кожного пацієнта, включаючи контактну інформацію, медичну історію та записи про лікування.
 
-## Installation
-To run the Dental CRM Flutter Front locally on your machine, you need to set up the Flutter development environment. Follow these steps:
 
-1. Ensure you have Flutter installed. You can find the installation instructions in the [official Flutter documentation](https://flutter.dev/docs/get-started/install).
-2. Clone this repository to your local machine using Git or download it as a ZIP archive.
-3. Open a terminal or command prompt and navigate to the project's root directory.
-4. Run the following command to fetch the project dependencies:
+- **Відстеження лікування**: Відстеження лікування пацієнта, включаючи прогрес, рецепти та деталі щодо оплати.
+- **Сповіщення**: Отримання сповіщень про майбутні записи та інші важливі оновлення.
+- **Пошук та фільтри**: Ефективний пошук та фільтрація записів пацієнтів за різними критеріями.
+- **Адаптивний інтерфейс**: Додаток розроблено так, щоб він працював на мобільних пристроях та планшетах рівномірно.
+
+## Встановлення
+Щоб запустити Dental CRM Flutter Front локально на своєму комп'ютері, вам потрібно налаштувати середовище розробки Flutter. Дотримуйтеся цих кроків:
+
+1. Переконайтеся, що ви встановили Flutter. Інструкції з встановлення можна знайти в [офіційній документації Flutter](https://flutter.dev/docs/get-started/install).
+2. Клонуйте цей репозиторій на свій комп'ютер за допомогою Git або завантажте його як ZIP-архів.
+3. Відкрийте термінал або командний рядок та перейдіть до кореневої папки проекту.
+4. Виконайте наступну команду, щоб встановити залежності проекту:
+```shell
+flutter pub get
+```
+
+## Використання
+Після встановлення залежностей ви можете запустити Dental CRM Flutter Front на емуляторі або фізичному пристрої. Введіть наступну команду:
+```shell
+flutter run
+```
+
+## Співпраця
+Якщо ви бажаєте сприяти розвитку Dental CRM Flutter Front, будемо раді отримати вашу допомогу. Ви можете подати заявку на участь у внесенні змін (pull request) або повідомити про виявлені проблеми (issue).
+
+## Ліцензія
+Цей проект розповсюджується під [ліцензією MIT](LICENSE).
