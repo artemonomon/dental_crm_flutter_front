@@ -1,13 +1,39 @@
 import 'package:dental_crm_flutter_front/repositories/auth/models/models.dart';
+
 import 'package:dio/dio.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class AuthRepository {
   final Dio _dio = Dio();
+  static String mainUrl =
+      "https://dental-crm-go-back-production.up.railway.app/api/v1/auth";
+  var loginUrl = "$mainUrl/login";
+  var registerUrl = "$mainUrl/register";
+
+  final FlutterSecureStorage storage = const FlutterSecureStorage();
+
+  Future<bool> hasToken() async {
+    var value = await storage.read(key: 'token');
+    if (value != null) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<void> persisToken(String token) async {
+    await storage.write(key: 'token', value: token);
+  }
+
+  Future<void> deleteToken() async {
+    storage.delete(key: 'token');
+    storage.deleteAll();
+  }
 
   Future<RegistrationResponse> register(RegistrationRequest request) async {
     try {
       final response = await _dio.post(
-        'https://dental-crm-go-back-production.up.railway.app/api/v1/auth/register',
+        registerUrl,
         data: request.toJson(),
       );
       final registrationResponse = RegistrationResponse.fromJson(response.data);
@@ -21,7 +47,7 @@ class AuthRepository {
   Future<LoginResponse> login(LoginRequest request) async {
     try {
       final response = await _dio.post(
-        'https://dental-crm-go-back-production.up.railway.app/api/v1/auth/login',
+        loginUrl,
         data: request.toJson(),
       );
       final loginResponse = LoginResponse.fromJson(response.data);

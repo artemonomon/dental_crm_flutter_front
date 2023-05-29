@@ -44,6 +44,7 @@ dependencies:
   equatable: ^2.0.5
   shared_preferences: ^2.1.1
   motion_toast: ^2.6.7
+  flutter_secure_storage: ^8.0.0
 
 dev_dependencies:
   flutter_test:

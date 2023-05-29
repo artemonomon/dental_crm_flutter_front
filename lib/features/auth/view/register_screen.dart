@@ -1,4 +1,4 @@
-import 'package:dental_crm_flutter_front/features/auth/bloc/auth_bloc.dart';
+import 'package:dental_crm_flutter_front/features/auth/auth_bloc/auth_bloc.dart';
 import 'package:dental_crm_flutter_front/features/auth/widgets/widgets.dart';
 import 'package:dental_crm_flutter_front/repositories/auth/auth_repository.dart';
 import 'package:dental_crm_flutter_front/repositories/auth/models/models.dart';
@@ -90,7 +90,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 // Authentication successful, handle the response
                                 final response = state.response;
 
-                                Navigator.of(context).pushNamed('/patients');
+                                Navigator.of(context).pushNamedAndRemoveUntil(
+                                    '/patients',
+                                    (Route<dynamic> route) => false);
 
                                 print('Register is successful: $response');
                               } else if (state is AuthFailure) {
