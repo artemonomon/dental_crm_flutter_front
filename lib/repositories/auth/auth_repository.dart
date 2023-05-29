@@ -7,9 +7,12 @@ class AuthRepository {
   Future<RegistrationResponse> register(RegistrationRequest request) async {
     try {
       final response = await _dio.post(
-          'https://app-sqlite-aiy3mtkmhq-lm.a.run.app/api/v1/auth/register',
-          data: request.toJson());
-      return RegistrationResponse.fromJson(response.data);
+        'https://dental-crm-go-back-production.up.railway.app/api/v1/auth/register',
+        data: request.toJson(),
+      );
+      final registrationResponse = RegistrationResponse.fromJson(response.data);
+
+      return registrationResponse;
     } catch (error) {
       throw Exception('Failed to register: $error');
     }
@@ -18,13 +21,22 @@ class AuthRepository {
   Future<LoginResponse> login(LoginRequest request) async {
     try {
       final response = await _dio.post(
-          'https://app-sqlite-aiy3mtkmhq-lm.a.run.app/api/v1/auth/login',
-          data: request.toJson());
-      return LoginResponse.fromJson(response.data);
+        'https://dental-crm-go-back-production.up.railway.app/api/v1/auth/login',
+        data: request.toJson(),
+      );
+      final loginResponse = LoginResponse.fromJson(response.data);
+
+      return loginResponse;
     } catch (error) {
       throw Exception('Failed to login: $error');
     }
   }
+
+  // Future<bool> checkAuthStatus() async {
+  //   final token = await TokenManager.getToken();
+  //   // Перевірка статусу авторизації за наявності токену
+  //   return token.isNotEmpty;
+  // }
   // Future<User> register(String email, String password) async {
   //   try {
   //     Response response = await _dio.post(

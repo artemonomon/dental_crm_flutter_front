@@ -18,8 +18,8 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   AuthRepository authRepository = AuthRepository();
   late AuthBloc authBloc;
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
   void initState() {
@@ -46,7 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
           height: height,
           width: width,
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               ResponsiveWidget.isSmallScreen(context)
@@ -83,19 +83,21 @@ class _LoginScreenState extends State<LoginScreen> {
                   create: (context) => authBloc,
                   child: SingleChildScrollView(
                       child: BlocConsumer<AuthBloc, AuthState>(
-                    listener: (context, state) {
+                    listener: (context, state) async {
                       if (state is AuthSuccess) {
                         // Authentication successful, handle the response
                         final response = state.response;
-                        Navigator.of(context).pushNamed('/main');
+
+                        Navigator.of(context).pushNamed('/patients');
+
                         print('Login is successful: $response');
                       } else if (state is AuthFailure) {
                         // Authentication failed, show error message
                         final error = state.error;
                         MotionToast.error(
-                                title: Text("Щось пішло не так"),
-                                description:
-                                    Text("Перeвірте чи все ви ввели правильно"))
+                                title: const Text("Щось пішло не так"),
+                                description: const Text(
+                                    "Перeвірте чи все ви ввели правильно"))
                             .show(context);
                         print(error);
                       }
@@ -103,8 +105,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     builder: (context, state) {
                       if (state is AuthLoading) {
                         // Show loading indicator
-                        return const Center(
-                          child: CircularProgressIndicator(),
+                        return Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            Align(
+                              alignment: Alignment.center,
+                              child: CircularProgressIndicator(),
+                            ),
+                          ],
                         );
                       }
                       return Container(
@@ -243,13 +251,26 @@ class _LoginScreenState extends State<LoginScreen> {
                               text: 'Увійти',
                               color: AppColors.mainBlueColor,
                               onTap: () async {
-                                final loginRequest = LoginRequest(
-                                  email: _emailController.text,
-                                  password: _passwordController.text,
-                                );
-                                context
-                                    .read<AuthBloc>()
-                                    .add(LoginEvent(loginRequest));
+                                var email = _emailController.text;
+                                var password = _passwordController.text;
+
+                                if (email.isEmpty || password.isEmpty) {
+                                  MotionToast.error(
+                                          title:
+                                              const Text("Щось пішло не так"),
+                                          description: const Text(
+                                              "Поля вводу не можуть бути пустими"))
+                                      .show(context);
+                                  return;
+                                } else {
+                                  final loginRequest = LoginRequest(
+                                      email: email, password: password);
+                                  authBloc.add(LoginEvent(loginRequest));
+                                  context
+                                      .read<AuthBloc>()
+                                      .add(LoginEvent(loginRequest));
+                                }
+
                                 // final email = _emailController.text;
                                 // final password = _passwordController.text;
 

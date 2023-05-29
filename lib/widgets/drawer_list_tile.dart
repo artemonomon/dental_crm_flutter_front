@@ -21,7 +21,7 @@ class DrawerListTile extends StatelessWidget {
         svgSrc,
         height: 30,
       ),
-      contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       horizontalTitleGap: 20.0,
       title: Text(
         title,

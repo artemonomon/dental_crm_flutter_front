@@ -18,9 +18,9 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   AuthRepository authRepository = AuthRepository();
   late AuthBloc authBloc;
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
   void initState() {
@@ -48,7 +48,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             height: height,
             width: width,
             child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   ResponsiveWidget.isSmallScreen(context)
@@ -85,18 +85,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         create: (context) => authBloc,
                         child: SingleChildScrollView(
                           child: BlocConsumer<AuthBloc, AuthState>(
-                            listener: (context, state) {
+                            listener: (context, state) async {
                               if (state is AuthSuccess) {
                                 // Authentication successful, handle the response
                                 final response = state.response;
-                                Navigator.of(context).pushNamed('/main');
+
+                                Navigator.of(context).pushNamed('/patients');
+
                                 print('Register is successful: $response');
                               } else if (state is AuthFailure) {
                                 // Authentication failed, show error message
                                 final error = state.error;
                                 MotionToast.error(
-                                        title: Text("Щось пішло не так"),
-                                        description: Text(
+                                        title: const Text("Щось пішло не так"),
+                                        description: const Text(
                                             "Перeвірте чи все ви ввели правильно"))
                                     .show(context);
                                 print(error);
@@ -105,8 +107,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             builder: (context, state) {
                               if (state is AuthLoading) {
                                 // Show loading indicator
-                                return const Center(
-                                  child: CircularProgressIndicator(),
+                                return Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: const [
+                                    Align(
+                                      alignment: Alignment.center,
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  ],
                                 );
                               }
                               return Container(
@@ -252,14 +260,47 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       text: 'Увійти',
                                       color: AppColors.mainBlueColor,
                                       onTap: () {
-                                        final registerRequest =
-                                            RegistrationRequest(
-                                          name: _nameController.text,
-                                          email: _emailController.text,
-                                          password: _passwordController.text,
-                                        );
-                                        context.read<AuthBloc>().add(
-                                            RegistrationEvent(registerRequest));
+                                        var name = _nameController.text;
+                                        var email = _emailController.text;
+                                        var password = _passwordController.text;
+
+                                        if (name.isEmpty ||
+                                            email.isEmpty ||
+                                            password.isEmpty) {
+                                          MotionToast.error(
+                                                  title: const Text(
+                                                      "Щось пішло не так"),
+                                                  description: const Text(
+                                                      "Поля не можуть бути пустими"))
+                                              .show(context);
+                                          return;
+                                        } else if (!email.contains('@')) {
+                                          MotionToast.error(
+                                                  title: const Text(
+                                                      "Щось пішло не так"),
+                                                  description: const Text(
+                                                      "Неправильний формат електронної пошти"))
+                                              .show(context);
+                                          return;
+                                        } else if (password.length < 8) {
+                                          MotionToast.error(
+                                                  title: const Text(
+                                                      "Щось пішло не так"),
+                                                  description: const Text(
+                                                      "Пароль повинен містити не менше 8 символів"))
+                                              .show(context);
+                                          return;
+                                        } else {
+                                          final registerRequest =
+                                              RegistrationRequest(
+                                            name: _nameController.text,
+                                            email: _emailController.text,
+                                            password: _passwordController.text,
+                                          );
+                                          context.read<AuthBloc>().add(
+                                              RegistrationEvent(
+                                                  registerRequest));
+                                        }
                                       },
                                     )
                                   ],
