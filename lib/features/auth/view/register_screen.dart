@@ -37,6 +37,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     super.dispose();
   }
 
+  bool _isPasswordVisible = false;
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -232,8 +233,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                       width: width,
                                       hintText: 'Пароль',
                                       prefixIcon: const Icon(Icons.lock),
-                                      suffixIcon: const Icon(
-                                          Icons.remove_red_eye_outlined),
+                                      suffixIcon: GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            _isPasswordVisible =
+                                                !_isPasswordVisible; // Toggle the visibility state
+                                          });
+                                        },
+                                        child: Icon(
+                                          _isPasswordVisible
+                                              ? Icons.visibility_off
+                                              : Icons.visibility,
+                                        ),
+                                      ),
+                                      obscureText: !_isPasswordVisible,
                                     ),
                                     SizedBox(height: height * 0.015),
                                     Text(

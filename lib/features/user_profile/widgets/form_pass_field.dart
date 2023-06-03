@@ -4,18 +4,14 @@ import 'package:flutter/material.dart';
 
 class FormPasswordField extends StatelessWidget {
   const FormPasswordField({
-    super.key,
-    required this.height,
-    required this.width,
+    Key? key,
     this.prefixIcon,
     this.suffixIcon,
     this.hintText,
     this.controller,
     this.obscureText = true,
-  });
+  }) : super(key: key);
 
-  final double height;
-  final double width;
   final Icon? prefixIcon;
   final GestureDetector? suffixIcon;
   final String? hintText;
@@ -25,11 +21,10 @@ class FormPasswordField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: height * 0.06,
-      width: width,
       decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16.0),
-          color: AppColors.whiteColor),
+        borderRadius: BorderRadius.circular(16.0),
+        color: AppColors.whiteColor,
+      ),
       alignment: Alignment.center,
       child: Padding(
         padding: ResponsiveWidget.isSmallScreen(context)
@@ -39,21 +34,20 @@ class FormPasswordField extends StatelessWidget {
           controller: controller,
           obscureText: obscureText,
           style: AppStyles.ralewayStyle.copyWith(
-              fontSize: 18.0,
-              color: AppColors.blueDarkColor,
-              fontWeight: FontWeight.w400),
+            fontSize: 18.0,
+            color: AppColors.blueDarkColor,
+            fontWeight: FontWeight.w400,
+          ),
           decoration: InputDecoration(
             border: InputBorder.none,
-            prefixIcon: IconButton(
-              onPressed: () {},
-              icon: prefixIcon ?? Container(),
-            ),
+            contentPadding: const EdgeInsets.all(16.0),
             suffixIcon: suffixIcon ?? Container(),
             hintText: hintText ?? '',
             hintStyle: AppStyles.ralewayStyle.copyWith(
-                fontSize: 18.0,
-                color: AppColors.blueDarkColor.withOpacity(0.5),
-                fontWeight: FontWeight.w400),
+              fontSize: 18.0,
+              color: AppColors.blueDarkColor.withOpacity(0.5),
+              fontWeight: FontWeight.w400,
+            ),
           ),
         ),
       ),

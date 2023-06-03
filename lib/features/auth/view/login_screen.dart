@@ -123,6 +123,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  bool _isPasswordVisible = false;
   SingleChildScrollView _buildLoginScreen(
       double height, BuildContext context, double width) {
     return SingleChildScrollView(
@@ -234,7 +235,18 @@ class _LoginScreenState extends State<LoginScreen> {
             width: width,
             hintText: 'Пароль',
             prefixIcon: const Icon(Icons.lock),
-            suffixIcon: const Icon(Icons.remove_red_eye_outlined),
+            suffixIcon: GestureDetector(
+              onTap: () {
+                setState(() {
+                  _isPasswordVisible =
+                      !_isPasswordVisible; // Toggle the visibility state
+                });
+              },
+              child: Icon(
+                _isPasswordVisible ? Icons.visibility_off : Icons.visibility,
+              ),
+            ),
+            obscureText: !_isPasswordVisible,
           ),
           SizedBox(height: height * 0.015),
           Row(

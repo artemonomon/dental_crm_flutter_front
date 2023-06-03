@@ -1,5 +1,4 @@
 import 'package:dental_crm_flutter_front/features/auth/auth_bloc/auth_bloc.dart';
-import 'package:dental_crm_flutter_front/features/patients/view/responsive_main/responsive.dart';
 import 'package:dental_crm_flutter_front/features/user_profile/view/responsive_profile/responsive_profile.dart';
 import 'package:dental_crm_flutter_front/widgets/widgets.dart';
 import 'package:flutter/material.dart';
