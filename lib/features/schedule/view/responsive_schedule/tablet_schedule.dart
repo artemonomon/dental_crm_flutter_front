@@ -1,3 +1,4 @@
+import 'package:calendar_view/calendar_view.dart';
 import 'package:dental_crm_flutter_front/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
@@ -9,6 +10,7 @@ class TabletSchedule extends StatefulWidget {
 }
 
 class _TabletScheduleState extends State<TabletSchedule> {
+  final _controller = EventController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,13 +20,16 @@ class _TabletScheduleState extends State<TabletSchedule> {
         centerTitle: true,
       ),
       drawer: const SideMenu(),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: const [
-          Center(
-            child: Text('Сторінка з розкладом'),
-          ),
-        ],
+      body: DayView(
+        controller: _controller,
+        eventTileBuilder: (date, events, boundry, start, end) {
+          // Return your widget to display as event tile.
+          return Container();
+        },
+        onEventTap: (events, date) {
+          // Implement callback when user taps on an event.
+          print(events);
+        },
       ),
     );
   }

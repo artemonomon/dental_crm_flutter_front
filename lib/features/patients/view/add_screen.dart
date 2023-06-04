@@ -1,32 +1,30 @@
+import 'package:dental_crm_flutter_front/features/auth/auth_bloc/auth_bloc.dart';
+import 'package:dental_crm_flutter_front/features/patients/view/responsive_add/responsive_add.dart';
 import 'package:dental_crm_flutter_front/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class AddPatientForm extends StatefulWidget {
-  const AddPatientForm({super.key});
+class AddPatientScreen extends StatefulWidget {
+  const AddPatientScreen({super.key});
 
   @override
-  State<AddPatientForm> createState() => _AddPatientFormState();
+  State<AddPatientScreen> createState() => _AddPatientState();
 }
 
-class _AddPatientFormState extends State<AddPatientForm> {
+class _AddPatientState extends State<AddPatientScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Row(
-        children: [
-          const SideMenu(),
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Center(
-                  child: Text('Сторінка додавання пацієнтів'),
-                ),
-              ],
-            ),
-          )
-        ],
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state is AuthUnauthenticated) {
+          Navigator.of(context).pushNamedAndRemoveUntil(
+              '/login', (Route<dynamic> route) => false);
+        }
+      },
+      child: const ResponsiveLayout(
+        mobileScaffold: MobileAddPatientsForm(),
+        tabletScaffold: TabletAddPatientsForm(),
+        desktopScaffold: DesktopAddPatientForm(),
       ),
     );
   }

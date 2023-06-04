@@ -7,6 +7,7 @@ class AppColors {
   static const Color textColor = Color(0xff53587A);
   static const Color greyColor = Color(0xffAAAAAA);
   static const Color whiteColor = Color(0xffFFFFFF);
+  static const Color tilesBgColor = Color.fromARGB(255, 241, 240, 240);
 
   static const primaryColor = Color(0xFFFF6B81);
   static const secondaryColor = Color(0xFFE3E4E6);

@@ -1,5 +1,6 @@
 import 'package:dental_crm_flutter_front/features/auth/auth_bloc/auth_bloc.dart';
 import 'package:dental_crm_flutter_front/features/auth/view/view.dart';
+import 'package:dental_crm_flutter_front/features/patients/view/add_screen.dart';
 import 'package:dental_crm_flutter_front/features/patients/view/view.dart';
 import 'package:dental_crm_flutter_front/features/schedule/view/schedule_screen.dart';
 import 'package:dental_crm_flutter_front/features/user_profile/view/user_profile_screen.dart';
@@ -61,7 +62,7 @@ class _DentalCrmAppState extends State<DentalCrmApp> {
         '/login': (context) => LoginScreen(authRepository: authRepository),
         '/register': (context) => const RegisterScreen(),
         '/patients': (context) => const MainScreen(),
-        '/patients/add': (context) => const AddPatientForm(),
+        '/patients/add': (context) => const AddPatientScreen(),
         '/profile': (context) => const UserProfileScreen(),
         '/schedule': (context) => const ScheduleScreen(),
       },
