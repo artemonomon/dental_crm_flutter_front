@@ -1,4 +1,5 @@
-import 'package:dental_crm_flutter_front/features/patients/view/patient_detail.dart';
+import 'package:dental_crm_flutter_front/features/patients/view/data_screen.dart';
+
 import 'package:dental_crm_flutter_front/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
@@ -61,8 +62,7 @@ class _TabletMainState extends State<TabletMain> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) =>
-                                  const PatientDetailsScreen()),
+                              builder: (context) => const PatientDataScreen()),
                         );
                       },
                     );

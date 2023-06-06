@@ -248,23 +248,6 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             obscureText: !_isPasswordVisible,
           ),
-          SizedBox(height: height * 0.015),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              TextButton(
-                onPressed: () {},
-                child: Text(
-                  'Забули пароль?',
-                  style: AppStyles.ralewayStyle.copyWith(
-                    fontSize: 18.0,
-                    color: AppColors.mainBlueColor,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-            ],
-          ),
           SizedBox(height: height * 0.05),
           AuthButton(
             text: 'Увійти',

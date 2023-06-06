@@ -1,7 +1,10 @@
-import 'package:dental_crm_flutter_front/features/patients/view/patient_detail.dart';
-import 'package:dental_crm_flutter_front/utils/app_colors.dart';
+import 'package:dental_crm_flutter_front/features/patients/bloc/patients_bloc.dart';
+import 'package:dental_crm_flutter_front/features/patients/view/data_screen.dart';
+import 'package:dental_crm_flutter_front/repositories/patient/patient_repository.dart';
+
 import 'package:dental_crm_flutter_front/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DesktopMain extends StatefulWidget {
   const DesktopMain({super.key});
@@ -11,8 +14,18 @@ class DesktopMain extends StatefulWidget {
 }
 
 class _DesktopMainState extends State<DesktopMain> {
-  TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
   bool _isSearching = false;
+
+  PatientRepository patientRepository = PatientRepository();
+  late PatientsBloc patientsBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    patientsBloc = PatientsBloc(patientRepository);
+    patientsBloc.add(GetPatientsEvent());
+  }
 
   @override
   void dispose() {
@@ -47,27 +60,47 @@ class _DesktopMainState extends State<DesktopMain> {
                 _buildSearchField(),
                 const SizedBox(height: 20),
                 Expanded(
-                  child: ListView.builder(
-                      itemCount: 10,
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          leading: const CircleAvatar(
-                            backgroundImage: NetworkImage(
-                                'https://www.w3schools.com/howto/img_avatar.png'),
-                          ),
-                          title: const Text('John Doe'),
-                          subtitle: const Text('+380 66 666 66 66'),
-                          trailing: const Icon(Icons.arrow_forward_ios),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const PatientDetailsScreen()),
-                            );
-                          },
+                  child: BlocBuilder<PatientsBloc, PatientsState>(
+                    bloc: patientsBloc,
+                    builder: (context, state) {
+                      if (state is PatientsLoadedState) {
+                        return ListView.builder(
+                            itemCount: state.patients.items.length,
+                            itemBuilder: (context, index) {
+                              final patient = state.patients.items[index];
+                              return ListTile(
+                                leading: const CircleAvatar(
+                                  backgroundImage: NetworkImage(
+                                      'https://www.w3schools.com/howto/img_avatar.png'),
+                                ),
+                                title: Text(patient.name),
+                                subtitle: Text(patient.phone1),
+                                trailing: const Icon(Icons.arrow_forward_ios),
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const PatientDataScreen()),
+                                  );
+                                },
+                              );
+                            });
+                      } else if (state is PatientLoadingState) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
                         );
-                      }),
+                      } else if (state is PatientErrorState) {
+                        return Center(
+                          child: Text(state.errorMessage),
+                        );
+                      } else {
+                        return const Center(
+                          child: Text('No data'),
+                        );
+                      }
+                    },
+                  ),
                 ),
               ],
             ),

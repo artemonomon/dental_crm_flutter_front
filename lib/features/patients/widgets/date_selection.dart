@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 class DateSelection extends StatefulWidget {
-  const DateSelection({super.key});
+  final void Function(DateTime) onDateSelected; // Step 1
+
+  const DateSelection({Key? key, required this.onDateSelected})
+      : super(key: key);
 
   @override
   State<DateSelection> createState() => _DateSelectionState();
@@ -26,7 +29,12 @@ class _DateSelectionState extends State<DateSelection> {
                     child: Text(day.toString()),
                   ))
               .toList(),
-          onChanged: (int? value) => setState(() => _day = value!),
+          onChanged: (int? value) {
+            setState(() {
+              _day = value!;
+              _notifyDateSelected(); // Step 3
+            });
+          },
         ),
         const SizedBox(width: 10),
         DropdownButton<int>(
@@ -37,7 +45,12 @@ class _DateSelectionState extends State<DateSelection> {
                     child: Text(month.toString()),
                   ))
               .toList(),
-          onChanged: (int? value) => setState(() => _month = value!),
+          onChanged: (int? value) {
+            setState(() {
+              _month = value!;
+              _notifyDateSelected(); // Step 3
+            });
+          },
         ),
         const SizedBox(width: 10),
         DropdownButton<int>(
@@ -48,9 +61,19 @@ class _DateSelectionState extends State<DateSelection> {
                     child: Text(year.toString()),
                   ))
               .toList(),
-          onChanged: (int? value) => setState(() => _year = value!),
+          onChanged: (int? value) {
+            setState(() {
+              _year = value!;
+              _notifyDateSelected(); // Step 3
+            });
+          },
         ),
       ],
     );
+  }
+
+  void _notifyDateSelected() {
+    final selectedDate = DateTime(_year, _month, _day);
+    widget.onDateSelected(selectedDate); // Step 2
   }
 }
