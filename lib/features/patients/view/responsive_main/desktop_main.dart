@@ -80,8 +80,9 @@ class _DesktopMainState extends State<DesktopMain> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) =>
-                                            const PatientDataScreen()),
+                                        builder: (context) => PatientDataScreen(
+                                              patientId: patient.id,
+                                            )),
                                   );
                                 },
                               );

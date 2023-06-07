@@ -59,11 +59,11 @@ class _MobileMainState extends State<MobileMain> {
                       subtitle: const Text('+380 66 666 66 66'),
                       trailing: const Icon(Icons.arrow_forward_ios),
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const PatientDataScreen()),
-                        );
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(
+                        //       builder: (context) => const PatientDataScreen()),
+                        // );
                       },
                     );
                   }),

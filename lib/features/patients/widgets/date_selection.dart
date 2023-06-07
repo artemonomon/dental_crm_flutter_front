@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 
 class DateSelection extends StatefulWidget {
-  final void Function(DateTime) onDateSelected; // Step 1
+  final void Function(DateTime) onDateSelected;
+  final int? day;
+  final int? month;
+  final int? year;
 
-  const DateSelection({Key? key, required this.onDateSelected})
+  const DateSelection(
+      {Key? key, required this.onDateSelected, this.day, this.month, this.year})
       : super(key: key);
 
   @override
@@ -14,6 +18,14 @@ class _DateSelectionState extends State<DateSelection> {
   int _day = 1;
   int _month = 1;
   int _year = DateTime.now().year;
+
+  @override
+  void initState() {
+    super.initState();
+    _day = widget.day ?? 1;
+    _month = widget.month ?? 1;
+    _year = widget.year ?? DateTime.now().year;
+  }
 
   @override
   Widget build(BuildContext context) {

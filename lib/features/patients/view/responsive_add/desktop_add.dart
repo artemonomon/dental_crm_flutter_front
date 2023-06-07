@@ -32,7 +32,8 @@ class _DesktopAddPatientFormState extends State<DesktopAddPatientForm> {
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _infoController = TextEditingController();
   final TextEditingController _commentController = TextEditingController();
-  late String selectedDate;
+  String selectedDate =
+      DateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(DateTime.now());
 
   late PatientsBloc patientsBloc;
   PatientRepository patientRepository = PatientRepository();
@@ -61,7 +62,7 @@ class _DesktopAddPatientFormState extends State<DesktopAddPatientForm> {
     SaveRequest request;
     final patientsBloc = BlocProvider.of<PatientsBloc>(context);
     request = SaveRequest(
-      name: _nameController.text,
+      name: '${_nameController.text} ${_surnameController.text}',
       phone: _phone1Controller.text,
       phone2: _phone2Controller.text,
       address: _addressController.text,
@@ -105,26 +106,7 @@ class _DesktopAddPatientFormState extends State<DesktopAddPatientForm> {
               child: BlocBuilder<PatientsBloc, PatientsState>(
                 builder: (context, state) {
                   if (state is PatientLoadingState) {
-                    return Expanded(
-                      child: Container(
-                        color: Colors.white,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: const [
-                            SizedBox(
-                              height: 25,
-                              width: 25,
-                              child: CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                    AppColors.mainBlueColor),
-                                strokeWidth: 5.0,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
+                    return const MyProgressIndicator();
                   }
                   return _addPatienBuild(context);
                 },
@@ -393,23 +375,4 @@ class _DesktopAddPatientFormState extends State<DesktopAddPatientForm> {
       ],
     );
   }
-
-  // Widget _buildTextFields() {
-  //   return Column(
-  //     crossAxisAlignment: CrossAxisAlignment.start,
-  //     children: const [
-  //       TextField(
-  //         decoration: InputDecoration(labelText: 'Прізвище'),
-  //       ),
-  //       SizedBox(height: 10),
-  //       TextField(
-  //         decoration: InputDecoration(labelText: "Ім'я"),
-  //       ),
-  //       SizedBox(height: 10),
-  //       TextField(
-  //         decoration: InputDecoration(labelText: 'Телефон'),
-  //       ),
-  //     ],
-  //   );
-  // }
 }
