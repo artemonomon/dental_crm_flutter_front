@@ -23,10 +23,22 @@ class PatientsLoadedState extends PatientsState {
   const PatientsLoadedState(this.patients);
 }
 
+class PatientUpdatedState extends PatientsState {
+  final Patient patient;
+
+  const PatientUpdatedState(this.patient);
+}
+
 class PatientDeletedState extends PatientsState {}
 
 class PatientErrorState extends PatientsState {
   final String errorMessage;
 
   const PatientErrorState(this.errorMessage);
+}
+
+class PatientDeleteErrorState extends PatientsState {
+  final String errorMessage;
+
+  const PatientDeleteErrorState(this.errorMessage);
 }

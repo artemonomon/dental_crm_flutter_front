@@ -9,6 +9,10 @@ part 'patients_state.dart';
 class PatientsBloc extends Bloc<PatientsEvent, PatientsState> {
   final PatientRepository patientRepository;
   PatientsBloc(this.patientRepository) : super(PatientsInitial()) {
+    on<PatientInitialEvent>((event, emit) async {
+      emit(PatientLoadingState());
+    });
+
     on<SavePatientEvent>((event, emit) async {
       emit(PatientLoadingState());
       try {
@@ -24,6 +28,7 @@ class PatientsBloc extends Bloc<PatientsEvent, PatientsState> {
       try {
         final patient =
             await patientRepository.updatePatient(event.id, event.request);
+        emit(PatientUpdatedState(patient));
         emit(PatientLoadedState(patient));
       } catch (error) {
         emit(PatientErrorState(error.toString()));
@@ -56,7 +61,7 @@ class PatientsBloc extends Bloc<PatientsEvent, PatientsState> {
         await patientRepository.deletePatient(event.id);
         emit(PatientDeletedState());
       } catch (error) {
-        emit(PatientErrorState(error.toString()));
+        emit(PatientDeleteErrorState(error.toString()));
       }
     });
   }

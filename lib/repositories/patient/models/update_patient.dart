@@ -7,7 +7,7 @@ class UpdateRequest {
   final String sex;
   final String importantInfo;
   final String comment;
-  final DateTime dateOfBirth;
+  final String dateOfBirth;
 
   UpdateRequest({
     required this.name,
@@ -31,7 +31,7 @@ class UpdateRequest {
       'sex': sex,
       'important_info': importantInfo,
       'comment': comment,
-      'date_of_birth': dateOfBirth.toIso8601String(),
+      'date_of_birth': dateOfBirth,
     };
   }
 }

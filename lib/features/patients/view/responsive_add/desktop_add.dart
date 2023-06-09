@@ -61,6 +61,8 @@ class _DesktopAddPatientFormState extends State<DesktopAddPatientForm> {
   void _savePatient(BuildContext context) {
     SaveRequest request;
     final patientsBloc = BlocProvider.of<PatientsBloc>(context);
+    String dateOfBirth =
+        selectedDate.endsWith("Z") ? selectedDate : "${selectedDate}Z";
     request = SaveRequest(
       name: '${_nameController.text} ${_surnameController.text}',
       phone: _phone1Controller.text,
@@ -70,7 +72,7 @@ class _DesktopAddPatientFormState extends State<DesktopAddPatientForm> {
       sex: _gender ?? "Чоловік",
       importantInfo: _infoController.text,
       comment: _commentController.text,
-      dateOfBirth: "${selectedDate}Z",
+      dateOfBirth: dateOfBirth,
     );
     // Perform the save operation by dispatching an event
     patientsBloc.add(SavePatientEvent(request));

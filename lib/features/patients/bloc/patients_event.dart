@@ -7,6 +7,8 @@ abstract class PatientsEvent extends Equatable {
   List<Object> get props => [];
 }
 
+class PatientInitialEvent extends PatientsEvent {}
+
 class SavePatientEvent extends PatientsEvent {
   final SaveRequest request;
 
