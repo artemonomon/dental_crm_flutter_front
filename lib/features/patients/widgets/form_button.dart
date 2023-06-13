@@ -8,12 +8,16 @@ class FormButton extends StatelessWidget {
     this.color,
     this.onTap,
     this.textColor,
+    this.horizontalEI,
+    this.verticalEI,
   });
 
   final String text;
   final Color? color;
   final Color? textColor;
   final VoidCallback? onTap;
+  final double? horizontalEI;
+  final double? verticalEI;
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -22,7 +26,8 @@ class FormButton extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(16.0),
         child: Ink(
-          padding: const EdgeInsets.symmetric(horizontal: 70.0, vertical: 18.0),
+          padding: EdgeInsets.symmetric(
+              horizontal: horizontalEI ?? 70.0, vertical: verticalEI ?? 18.0),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16.0),
             color: color,

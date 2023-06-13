@@ -3,8 +3,12 @@ import 'dart:io';
 import 'package:dental_crm_flutter_front/features/patients/bloc/patients_bloc.dart';
 import 'package:dental_crm_flutter_front/features/patients/widgets/date_selection.dart';
 import 'package:dental_crm_flutter_front/features/patients/widgets/form_button.dart';
+import 'package:dental_crm_flutter_front/features/patients/widgets/index.dart';
+
+import 'package:dental_crm_flutter_front/features/user_profile/bloc/user_bloc.dart';
 import 'package:dental_crm_flutter_front/repositories/patient/models/models.dart';
 import 'package:dental_crm_flutter_front/repositories/patient/patient_repository.dart';
+import 'package:dental_crm_flutter_front/repositories/user/user_repository.dart';
 import 'package:dental_crm_flutter_front/utils/utils.dart';
 import 'package:dental_crm_flutter_front/widgets/widgets.dart';
 import 'package:file_picker/file_picker.dart';
@@ -28,11 +32,14 @@ class DesktopDataScreen extends StatefulWidget {
 class _DesktopDataScreenState extends State<DesktopDataScreen>
     with SingleTickerProviderStateMixin {
   PatientRepository patientRepository = PatientRepository();
+  UserRepository userRepository = UserRepository();
   late PatientsBloc patientsBloc;
+  late UserBloc userBloc;
   late TabController _tabController;
 
   bool showConfirmation = false;
   bool isEditing = false;
+  bool isBold = false;
   String? _gender = 'Чоловік';
   final TextEditingController _surnameController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
@@ -42,13 +49,19 @@ class _DesktopDataScreenState extends State<DesktopDataScreen>
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _infoController = TextEditingController();
   final TextEditingController _commentController = TextEditingController();
+  final TextEditingController _historyComment = TextEditingController();
+  List<TextEditingController> _commentControllers = [];
   String selectedDate =
-  DateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(DateTime.now());
+      DateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(DateTime.now());
+  String userName = '';
 
   @override
   void initState() {
     super.initState();
+    _commentControllers = List.generate(10, (index) => TextEditingController());
     patientsBloc = PatientsBloc(patientRepository);
+    userBloc = UserBloc(UserRepository());
+    userBloc.add(FetchUserEvent());
     patientsBloc.add(GetPatientByIdEvent(widget.patientId));
     _tabController = TabController(length: 2, vsync: this);
   }
@@ -66,13 +79,17 @@ class _DesktopDataScreenState extends State<DesktopDataScreen>
     _addressController.dispose();
     _infoController.dispose();
     _commentController.dispose();
+    _historyComment.dispose();
+    for (var controller in _commentControllers) {
+      controller.dispose();
+    }
   }
 
   void _savePatient(BuildContext context) {
     UpdateRequest request;
     final patientsBloc = BlocProvider.of<PatientsBloc>(context);
     String dateOfBirth =
-    selectedDate.endsWith("Z") ? selectedDate : "${selectedDate}Z";
+        selectedDate.endsWith("Z") ? selectedDate : "${selectedDate}Z";
     request = UpdateRequest(
       name: '${_surnameController.text} ${_nameController.text} ',
       phone: _phone1Controller.text,
@@ -148,8 +165,8 @@ class _DesktopDataScreenState extends State<DesktopDataScreen>
           if (state is PatientErrorState) {
             final error = state.errorMessage;
             MotionToast.error(
-                title: const Text("Щось пішло не так"),
-                description: const Text("Не вдалося видалити пацієнта"))
+                    title: const Text("Щось пішло не так"),
+                    description: const Text("Не вдалося видалити пацієнта"))
                 .show(context);
             print(error);
           }
@@ -157,61 +174,208 @@ class _DesktopDataScreenState extends State<DesktopDataScreen>
         child: BlocBuilder<PatientsBloc, PatientsState>(
           bloc: patientsBloc,
           builder: (context, state) {
-            if (state is PatientLoadedState)
-              {
-
-              }
-            return Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-              margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-              decoration: const BoxDecoration(
-                color: Color.fromARGB(255, 241, 240, 240),
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 5,
-                    offset: Offset(0, 5),
-                  ),
-                ],
-              ),
-            );
+            if (state is PatientLoadedState) {
+              final patient = state.patient;
+              List<String> nameParts = patient.name.split(' ');
+              _surnameController.text = nameParts[0];
+              _nameController.text = nameParts.length > 1 ? nameParts[1] : '';
+              _phone1Controller.text = patient.phone1;
+              final year = patient.dateOfBirth.year;
+              final dob = patient.dateOfBirth;
+              return loadHistoryTab(year, dob);
+            } else if (state is PatientLoadingState) {
+              return const MyProgressIndicator();
+            }
+            return const Center(child: Text('Помилка завантаження даних'));
           },
         ),
       ),
     );
   }
 
+  Column loadHistoryTab(int year, DateTime dob) {
+    return Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          decoration: const BoxDecoration(
+            color: Color.fromARGB(255, 241, 240, 240),
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 5,
+                offset: Offset(0, 5),
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(100),
+                child: Container(
+                  width: 80,
+                  color: AppColors.tilesBgColor,
+                  child: _pickedImagePath != null
+                      ? Image.file(
+                          File(_pickedImagePath!),
+                          fit: BoxFit.cover,
+                        )
+                      : Image.asset(
+                          'assets/images/profile2.png',
+                          fit: BoxFit.cover,
+                        ),
+                ),
+              ),
+              const SizedBox(width: 20),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Пацієнт: ',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      Text(
+                        '${_surnameController.text} ${_nameController.text}',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Text(
+                        ' ${2023 - year} років',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    _phone1Controller.text,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          margin: const EdgeInsets.only(bottom: 20, left: 20, right: 20),
+          decoration: const BoxDecoration(
+            color: Color.fromARGB(255, 241, 240, 240),
+            borderRadius: BorderRadius.all(Radius.circular(10)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 5,
+                offset: Offset(0, 5),
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _commentController,
+                  decoration: const InputDecoration(
+                    hintText: 'Назва етапу',
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              FormButton(
+                horizontalEI: 30,
+                verticalEI: 10,
+                color: AppColors.mainBlueColor,
+                text: 'Зубна формула',
+                onTap: () {},
+              ),
+              const SizedBox(width: 10),
+              FormButton(
+                horizontalEI: 30,
+                verticalEI: 10,
+                color: Colors.green,
+                text: 'Створити',
+                onTap: () {},
+              ),
+            ],
+          ),
+        ),
+        ListView.builder(
+          shrinkWrap: true,
+          itemCount: 10,
+          itemBuilder: (context, index) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 20),
+              child: CommentTile(
+                  pickedImagePath: _pickedImagePath,
+                  userName: userName,
+                  historyComment: _commentControllers[index]),
+            );
+          },
+        ),
+      ],
+    );
+  }
+
   SingleChildScrollView _dataForm(BuildContext context) {
     return SingleChildScrollView(
-      child: BlocListener<PatientsBloc, PatientsState>(
-        listener: (context, state) {
-          if (state is PatientDeletedState) {
-            Navigator.of(context).pushNamedAndRemoveUntil(
-                '/patients', (Route<dynamic> route) => false);
-            MotionToast.delete(
-                description: const Text("Пацієнта успішно видалено"))
-                .show(context);
-          } else if (state is PatientDeleteErrorState) {
-            final error = state.errorMessage;
-            MotionToast.error(
-                title: const Text("Щось пішло не так"),
-                description: const Text("Не вдалося видалити пацієнта"))
-                .show(context);
-            print(error);
-          } else if (state is PatientErrorState) {
-            final error = state.errorMessage;
-            MotionToast.error(
-                title: const Text("Щось пішло не так"),
-                description: const Text("Не вдалося видалити пацієнта"))
-                .show(context);
-            print(error);
-          } else if (state is PatientUpdatedState) {
-            MotionToast.success(
-                description: const Text("Дані пацієнта успішно оновлено"))
-                .show(context);
-          }
-        },
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<PatientsBloc, PatientsState>(
+            bloc: patientsBloc,
+            listener: (context, state) {
+              if (state is PatientDeletedState) {
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                    '/patients', (Route<dynamic> route) => false);
+                MotionToast.delete(
+                        description: const Text("Пацієнта успішно видалено"))
+                    .show(context);
+              } else if (state is PatientDeleteErrorState) {
+                final error = state.errorMessage;
+                MotionToast.error(
+                        title: const Text("Щось пішло не так"),
+                        description: const Text("Не вдалося видалити пацієнта"))
+                    .show(context);
+                print(error);
+              } else if (state is PatientErrorState) {
+                final error = state.errorMessage;
+                MotionToast.error(
+                        title: const Text("Щось пішло не так"),
+                        description: const Text("Помилка завантаження даних"))
+                    .show(context);
+                print(error);
+              } else if (state is PatientUpdatedState) {
+                MotionToast.success(
+                        description:
+                            const Text("Дані пацієнта успішно оновлено"))
+                    .show(context);
+              }
+            },
+          ),
+          BlocListener<UserBloc, UserState>(
+            bloc: userBloc,
+            listener: (context, state) {
+              if (state is UserLoadedState) {
+                userName = state.user.name;
+              }
+            },
+          ),
+        ],
         child: BlocBuilder<PatientsBloc, PatientsState>(
           bloc: patientsBloc,
           builder: (context, state) {
@@ -241,8 +405,8 @@ class _DesktopDataScreenState extends State<DesktopDataScreen>
     );
   }
 
-  SingleChildScrollView _showDataForm(BuildContext context, int day, month,
-      year) {
+  SingleChildScrollView _showDataForm(
+      BuildContext context, int day, month, year) {
     return SingleChildScrollView(
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -273,7 +437,7 @@ class _DesktopDataScreenState extends State<DesktopDataScreen>
                       TextField(
                         controller: _surnameController,
                         decoration:
-                        const InputDecoration(labelText: 'Прізвище'),
+                            const InputDecoration(labelText: 'Прізвище'),
                         enabled: isEditing,
                       ),
                       const SizedBox(height: 10),
@@ -293,7 +457,7 @@ class _DesktopDataScreenState extends State<DesktopDataScreen>
                               PhoneInputFormatter(),
                             ],
                             decoration:
-                            const InputDecoration(labelText: 'Телефон 1'),
+                                const InputDecoration(labelText: 'Телефон 1'),
                             enabled: isEditing,
                           ),
                         ],
@@ -316,7 +480,7 @@ class _DesktopDataScreenState extends State<DesktopDataScreen>
                           PhoneInputFormatter(),
                         ],
                         decoration:
-                        const InputDecoration(labelText: 'Телефон 2'),
+                            const InputDecoration(labelText: 'Телефон 2'),
                         enabled: isEditing,
                       ),
                       const SizedBox(height: 10),
@@ -357,14 +521,14 @@ class _DesktopDataScreenState extends State<DesktopDataScreen>
                       TextField(
                         controller: _infoController,
                         decoration:
-                        const InputDecoration(labelText: "Валива інф-я"),
+                            const InputDecoration(labelText: "Валива інф-я"),
                         enabled: isEditing,
                       ),
                       const SizedBox(height: 10),
                       TextField(
                         controller: _commentController,
                         decoration:
-                        const InputDecoration(labelText: "Коментар"),
+                            const InputDecoration(labelText: "Коментар"),
                         enabled: isEditing,
                       ),
                       const SizedBox(height: 10),
@@ -374,7 +538,7 @@ class _DesktopDataScreenState extends State<DesktopDataScreen>
                         year: year,
                         onDateSelected: (DateTime date) {
                           final formattedDate =
-                          DateFormat('yyyy-MM-ddTHH:mm:ssZ').format(date);
+                              DateFormat('yyyy-MM-ddTHH:mm:ssZ').format(date);
                           setState(() {
                             selectedDate = formattedDate;
                           });
@@ -448,13 +612,13 @@ class _DesktopDataScreenState extends State<DesktopDataScreen>
             color: AppColors.tilesBgColor,
             child: _pickedImagePath != null
                 ? Image.file(
-              File(_pickedImagePath!),
-              fit: BoxFit.cover,
-            )
+                    File(_pickedImagePath!),
+                    fit: BoxFit.cover,
+                  )
                 : Image.asset(
-              'assets/images/profile2.png',
-              fit: BoxFit.cover,
-            ),
+                    'assets/images/profile2.png',
+                    fit: BoxFit.cover,
+                  ),
           ),
         ),
         Positioned(
@@ -523,8 +687,8 @@ class _DesktopDataScreenState extends State<DesktopDataScreen>
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Row(
-              children: [
+            Row(
+              children: const [
                 Icon(Icons.person, size: 24),
                 SizedBox(width: 8),
                 Text(
@@ -560,7 +724,7 @@ class _DesktopDataScreenState extends State<DesktopDataScreen>
                             ElevatedButton(
                               style: ButtonStyle(
                                 backgroundColor:
-                                MaterialStateProperty.all<Color>(
+                                    MaterialStateProperty.all<Color>(
                                   AppColors.mainBlueColor,
                                 ),
                               ),
