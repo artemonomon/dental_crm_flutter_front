@@ -64,7 +64,7 @@ class _DesktopAddPatientFormState extends State<DesktopAddPatientForm> {
     String dateOfBirth =
         selectedDate.endsWith("Z") ? selectedDate : "${selectedDate}Z";
     request = SaveRequest(
-      name: '${_nameController.text} ${_surnameController.text}',
+      name: '${_surnameController.text} ${_nameController.text} ',
       phone: _phone1Controller.text,
       phone2: _phone2Controller.text,
       address: _addressController.text,

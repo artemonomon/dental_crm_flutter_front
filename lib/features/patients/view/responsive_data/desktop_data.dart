@@ -17,6 +17,7 @@ import 'package:motion_toast/motion_toast.dart';
 
 class DesktopDataScreen extends StatefulWidget {
   final int patientId;
+
   const DesktopDataScreen({Key? key, required this.patientId})
       : super(key: key);
 
@@ -42,7 +43,7 @@ class _DesktopDataScreenState extends State<DesktopDataScreen>
   final TextEditingController _infoController = TextEditingController();
   final TextEditingController _commentController = TextEditingController();
   String selectedDate =
-      DateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(DateTime.now());
+  DateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(DateTime.now());
 
   @override
   void initState() {
@@ -71,7 +72,7 @@ class _DesktopDataScreenState extends State<DesktopDataScreen>
     UpdateRequest request;
     final patientsBloc = BlocProvider.of<PatientsBloc>(context);
     String dateOfBirth =
-        selectedDate.endsWith("Z") ? selectedDate : "${selectedDate}Z";
+    selectedDate.endsWith("Z") ? selectedDate : "${selectedDate}Z";
     request = UpdateRequest(
       name: '${_surnameController.text} ${_nameController.text} ',
       phone: _phone1Controller.text,
@@ -107,7 +108,7 @@ class _DesktopDataScreenState extends State<DesktopDataScreen>
                     labelColor: Colors.black,
                     unselectedLabelColor: Colors.black,
                     dividerColor: Colors.black,
-                    indicator: BoxDecoration(
+                    indicator: const BoxDecoration(
                       color: Color.fromARGB(255, 241, 240, 240),
                       border: Border(
                         bottom: BorderSide(
@@ -141,9 +142,43 @@ class _DesktopDataScreenState extends State<DesktopDataScreen>
 
   Widget _buildTreatmentHistoryTab() {
     return SingleChildScrollView(
-      child: Container(
-          // Treatment history tab content
-          ),
+      child: BlocListener<PatientsBloc, PatientsState>(
+        bloc: patientsBloc,
+        listener: (context, state) {
+          if (state is PatientErrorState) {
+            final error = state.errorMessage;
+            MotionToast.error(
+                title: const Text("Щось пішло не так"),
+                description: const Text("Не вдалося видалити пацієнта"))
+                .show(context);
+            print(error);
+          }
+        },
+        child: BlocBuilder<PatientsBloc, PatientsState>(
+          bloc: patientsBloc,
+          builder: (context, state) {
+            if (state is PatientLoadedState)
+              {
+
+              }
+            return Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              decoration: const BoxDecoration(
+                color: Color.fromARGB(255, 241, 240, 240),
+                borderRadius: BorderRadius.all(Radius.circular(10)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black12,
+                    blurRadius: 5,
+                    offset: Offset(0, 5),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
     );
   }
 
@@ -155,25 +190,25 @@ class _DesktopDataScreenState extends State<DesktopDataScreen>
             Navigator.of(context).pushNamedAndRemoveUntil(
                 '/patients', (Route<dynamic> route) => false);
             MotionToast.delete(
-                    description: const Text("Пацієнта успішно видалено"))
+                description: const Text("Пацієнта успішно видалено"))
                 .show(context);
           } else if (state is PatientDeleteErrorState) {
             final error = state.errorMessage;
             MotionToast.error(
-                    title: const Text("Щось пішло не так"),
-                    description: const Text("Не вдалося видалити пацієнта"))
+                title: const Text("Щось пішло не так"),
+                description: const Text("Не вдалося видалити пацієнта"))
                 .show(context);
             print(error);
           } else if (state is PatientErrorState) {
             final error = state.errorMessage;
             MotionToast.error(
-                    title: const Text("Щось пішло не так"),
-                    description: const Text("Не вдалося видалити пацієнта"))
+                title: const Text("Щось пішло не так"),
+                description: const Text("Не вдалося видалити пацієнта"))
                 .show(context);
             print(error);
           } else if (state is PatientUpdatedState) {
             MotionToast.success(
-                    description: const Text("Дані пацієнта успішно оновлено"))
+                description: const Text("Дані пацієнта успішно оновлено"))
                 .show(context);
           }
         },
@@ -206,8 +241,8 @@ class _DesktopDataScreenState extends State<DesktopDataScreen>
     );
   }
 
-  SingleChildScrollView _showDataForm(
-      BuildContext context, int day, month, year) {
+  SingleChildScrollView _showDataForm(BuildContext context, int day, month,
+      year) {
     return SingleChildScrollView(
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -238,7 +273,7 @@ class _DesktopDataScreenState extends State<DesktopDataScreen>
                       TextField(
                         controller: _surnameController,
                         decoration:
-                            const InputDecoration(labelText: 'Прізвище'),
+                        const InputDecoration(labelText: 'Прізвище'),
                         enabled: isEditing,
                       ),
                       const SizedBox(height: 10),
@@ -258,7 +293,7 @@ class _DesktopDataScreenState extends State<DesktopDataScreen>
                               PhoneInputFormatter(),
                             ],
                             decoration:
-                                const InputDecoration(labelText: 'Телефон 1'),
+                            const InputDecoration(labelText: 'Телефон 1'),
                             enabled: isEditing,
                           ),
                         ],
@@ -281,7 +316,7 @@ class _DesktopDataScreenState extends State<DesktopDataScreen>
                           PhoneInputFormatter(),
                         ],
                         decoration:
-                            const InputDecoration(labelText: 'Телефон 2'),
+                        const InputDecoration(labelText: 'Телефон 2'),
                         enabled: isEditing,
                       ),
                       const SizedBox(height: 10),
@@ -322,14 +357,14 @@ class _DesktopDataScreenState extends State<DesktopDataScreen>
                       TextField(
                         controller: _infoController,
                         decoration:
-                            const InputDecoration(labelText: "Валива інф-я"),
+                        const InputDecoration(labelText: "Валива інф-я"),
                         enabled: isEditing,
                       ),
                       const SizedBox(height: 10),
                       TextField(
                         controller: _commentController,
                         decoration:
-                            const InputDecoration(labelText: "Коментар"),
+                        const InputDecoration(labelText: "Коментар"),
                         enabled: isEditing,
                       ),
                       const SizedBox(height: 10),
@@ -339,7 +374,7 @@ class _DesktopDataScreenState extends State<DesktopDataScreen>
                         year: year,
                         onDateSelected: (DateTime date) {
                           final formattedDate =
-                              DateFormat('yyyy-MM-ddTHH:mm:ssZ').format(date);
+                          DateFormat('yyyy-MM-ddTHH:mm:ssZ').format(date);
                           setState(() {
                             selectedDate = formattedDate;
                           });
@@ -413,13 +448,13 @@ class _DesktopDataScreenState extends State<DesktopDataScreen>
             color: AppColors.tilesBgColor,
             child: _pickedImagePath != null
                 ? Image.file(
-                    File(_pickedImagePath!),
-                    fit: BoxFit.cover,
-                  )
+              File(_pickedImagePath!),
+              fit: BoxFit.cover,
+            )
                 : Image.asset(
-                    'assets/images/profile2.png',
-                    fit: BoxFit.cover,
-                  ),
+              'assets/images/profile2.png',
+              fit: BoxFit.cover,
+            ),
           ),
         ),
         Positioned(
@@ -488,8 +523,8 @@ class _DesktopDataScreenState extends State<DesktopDataScreen>
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              children: const [
+            const Row(
+              children: [
                 Icon(Icons.person, size: 24),
                 SizedBox(width: 8),
                 Text(
@@ -525,7 +560,7 @@ class _DesktopDataScreenState extends State<DesktopDataScreen>
                             ElevatedButton(
                               style: ButtonStyle(
                                 backgroundColor:
-                                    MaterialStateProperty.all<Color>(
+                                MaterialStateProperty.all<Color>(
                                   AppColors.mainBlueColor,
                                 ),
                               ),
