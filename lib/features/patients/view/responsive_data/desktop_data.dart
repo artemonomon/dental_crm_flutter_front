@@ -17,6 +17,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:intl/intl.dart';
+import 'package:ionicons/ionicons.dart';
 import 'package:motion_toast/motion_toast.dart';
 
 class DesktopDataScreen extends StatefulWidget {
@@ -49,7 +50,7 @@ class _DesktopDataScreenState extends State<DesktopDataScreen>
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _infoController = TextEditingController();
   final TextEditingController _commentController = TextEditingController();
-  final TextEditingController _historyComment = TextEditingController();
+  final TextEditingController _etapController = TextEditingController();
   List<TextEditingController> _commentControllers = [];
   String selectedDate =
       DateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").format(DateTime.now());
@@ -79,7 +80,7 @@ class _DesktopDataScreenState extends State<DesktopDataScreen>
     _addressController.dispose();
     _infoController.dispose();
     _commentController.dispose();
-    _historyComment.dispose();
+    _etapController.dispose();
     for (var controller in _commentControllers) {
       controller.dispose();
     }
@@ -290,7 +291,7 @@ class _DesktopDataScreenState extends State<DesktopDataScreen>
             children: [
               Expanded(
                 child: TextField(
-                  controller: _commentController,
+                  controller: _etapController,
                   decoration: const InputDecoration(
                     hintText: 'Назва етапу',
                   ),
@@ -301,6 +302,7 @@ class _DesktopDataScreenState extends State<DesktopDataScreen>
                 horizontalEI: 30,
                 verticalEI: 10,
                 color: AppColors.mainBlueColor,
+                prefixImage: AssetImage('assets/images/tooth.png'),
                 text: 'Зубна формула',
                 onTap: () {},
               ),
@@ -523,6 +525,9 @@ class _DesktopDataScreenState extends State<DesktopDataScreen>
                         decoration:
                             const InputDecoration(labelText: "Валива інф-я"),
                         enabled: isEditing,
+                        keyboardType: TextInputType.multiline,
+                        minLines: 1,
+                        maxLines: 5,
                       ),
                       const SizedBox(height: 10),
                       TextField(
@@ -530,6 +535,9 @@ class _DesktopDataScreenState extends State<DesktopDataScreen>
                         decoration:
                             const InputDecoration(labelText: "Коментар"),
                         enabled: isEditing,
+                        keyboardType: TextInputType.multiline,
+                        minLines: 1,
+                        maxLines: 5,
                       ),
                       const SizedBox(height: 10),
                       DateSelection(

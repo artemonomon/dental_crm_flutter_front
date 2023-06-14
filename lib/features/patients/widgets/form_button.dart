@@ -10,6 +10,7 @@ class FormButton extends StatelessWidget {
     this.textColor,
     this.horizontalEI,
     this.verticalEI,
+    this.prefixImage,
   });
 
   final String text;
@@ -18,6 +19,7 @@ class FormButton extends StatelessWidget {
   final VoidCallback? onTap;
   final double? horizontalEI;
   final double? verticalEI;
+  final ImageProvider? prefixImage;
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -32,13 +34,24 @@ class FormButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(16.0),
             color: color,
           ),
-          child: Text(
-            text,
-            style: AppStyles.ralewayStyle.copyWith(
-              fontSize: 20.0,
-              color: textColor ?? AppColors.whiteColor,
-              fontWeight: FontWeight.w400,
-            ),
+          child: Row(
+            children: [
+              if (prefixImage != null)
+                Image(
+                  image: prefixImage!,
+                  width: 24.0,
+                  height: 24.0,
+                ),
+              const SizedBox(width: 8.0),
+              Text(
+                text,
+                style: AppStyles.ralewayStyle.copyWith(
+                  fontSize: 20.0,
+                  color: textColor ?? AppColors.whiteColor,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ],
           ),
         ),
       ),
