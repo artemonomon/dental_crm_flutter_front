@@ -1,13 +1,12 @@
 import 'dart:io';
-
-import 'package:dental_crm_flutter_front/features/patients/bloc/patients_bloc.dart';
-import 'package:dental_crm_flutter_front/features/patients/widgets/date_selection.dart';
-import 'package:dental_crm_flutter_front/features/patients/widgets/form_button.dart';
-import 'package:dental_crm_flutter_front/features/patients/widgets/index.dart';
-
+import 'package:dental_crm_flutter_front/features/patients/patients_bloc/patients_bloc.dart';
+import 'package:dental_crm_flutter_front/features/patients/treatments_bloc/treatment_bloc.dart';
+import 'package:dental_crm_flutter_front/features/patients/widgets/widgets.dart';
 import 'package:dental_crm_flutter_front/features/user_profile/bloc/user_bloc.dart';
 import 'package:dental_crm_flutter_front/repositories/patient/models/models.dart';
 import 'package:dental_crm_flutter_front/repositories/patient/patient_repository.dart';
+import 'package:dental_crm_flutter_front/repositories/treatment/models/models.dart';
+import 'package:dental_crm_flutter_front/repositories/treatment/treatment_repository.dart';
 import 'package:dental_crm_flutter_front/repositories/user/user_repository.dart';
 import 'package:dental_crm_flutter_front/utils/utils.dart';
 import 'package:dental_crm_flutter_front/widgets/widgets.dart';
@@ -17,7 +16,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:intl/intl.dart';
-import 'package:ionicons/ionicons.dart';
+
 import 'package:motion_toast/motion_toast.dart';
 
 class DesktopDataScreen extends StatefulWidget {
@@ -34,8 +33,10 @@ class _DesktopDataScreenState extends State<DesktopDataScreen>
     with SingleTickerProviderStateMixin {
   PatientRepository patientRepository = PatientRepository();
   UserRepository userRepository = UserRepository();
+  TreatmentRepository treatmentRepository = TreatmentRepository();
   late PatientsBloc patientsBloc;
   late UserBloc userBloc;
+  late TreatmentBloc treatmentBloc;
   late TabController _tabController;
 
   bool showConfirmation = false;
@@ -59,11 +60,13 @@ class _DesktopDataScreenState extends State<DesktopDataScreen>
   @override
   void initState() {
     super.initState();
-    _commentControllers = List.generate(10, (index) => TextEditingController());
+
     patientsBloc = PatientsBloc(patientRepository);
-    userBloc = UserBloc(UserRepository());
+    userBloc = UserBloc(userRepository);
+    treatmentBloc = TreatmentBloc(treatmentRepository);
     userBloc.add(FetchUserEvent());
     patientsBloc.add(GetPatientByIdEvent(widget.patientId));
+    treatmentBloc.add(GetTreatmentsByPatientIdEvent(widget.patientId));
     _tabController = TabController(length: 2, vsync: this);
   }
 
@@ -86,7 +89,7 @@ class _DesktopDataScreenState extends State<DesktopDataScreen>
     }
   }
 
-  void _savePatient(BuildContext context) {
+  void _updatePatient(BuildContext context) {
     UpdateRequest request;
     final patientsBloc = BlocProvider.of<PatientsBloc>(context);
     String dateOfBirth =
@@ -102,8 +105,39 @@ class _DesktopDataScreenState extends State<DesktopDataScreen>
       comment: _commentController.text,
       dateOfBirth: dateOfBirth,
     );
-    // Perform the save operation by dispatching an event
+
     patientsBloc.add(UpdatePatientEvent(widget.patientId, request));
+  }
+
+  void _saveTreatment(BuildContext context, String comment) {
+    SaveTreatmentRequest request;
+    final treatmentsBloc = BlocProvider.of<TreatmentBloc>(context);
+    request = SaveTreatmentRequest(
+      patientId: widget.patientId,
+      doctorId: 1,
+      type: _etapController.text,
+      comment: comment,
+    );
+
+    treatmentsBloc.add(SaveTreatmentEvent(request));
+  }
+
+  void _updateTreatment(BuildContext context, String comment, int id) {
+    UpdateTreatmentRequest request;
+    final treatmentsBloc = BlocProvider.of<TreatmentBloc>(context);
+    request = UpdateTreatmentRequest(
+      patientId: widget.patientId,
+      doctorId: 1,
+      type: _etapController.text,
+      comment: comment,
+    );
+
+    treatmentsBloc.add(UpdateTreatmentEvent(id, request));
+  }
+
+  void _deleteTreatment(BuildContext context, int id) {
+    final treatmentsBloc = BlocProvider.of<TreatmentBloc>(context);
+    treatmentsBloc.add(DeleteTreatmentEvent(id));
   }
 
   @override
@@ -167,7 +201,7 @@ class _DesktopDataScreenState extends State<DesktopDataScreen>
             final error = state.errorMessage;
             MotionToast.error(
                     title: const Text("Щось пішло не так"),
-                    description: const Text("Не вдалося видалити пацієнта"))
+                    description: const Text("Помилка завантаження даних"))
                 .show(context);
             print(error);
           }
@@ -197,138 +231,117 @@ class _DesktopDataScreenState extends State<DesktopDataScreen>
   Column loadHistoryTab(int year, DateTime dob) {
     return Column(
       children: [
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-          decoration: const BoxDecoration(
-            color: Color.fromARGB(255, 241, 240, 240),
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black12,
-                blurRadius: 5,
-                offset: Offset(0, 5),
-              ),
-            ],
-          ),
-          child: Row(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(100),
-                child: Container(
-                  width: 80,
-                  color: AppColors.tilesBgColor,
-                  child: _pickedImagePath != null
-                      ? Image.file(
-                          File(_pickedImagePath!),
-                          fit: BoxFit.cover,
-                        )
-                      : Image.asset(
-                          'assets/images/profile2.png',
-                          fit: BoxFit.cover,
-                        ),
-                ),
-              ),
-              const SizedBox(width: 20),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Пацієнт: ',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      Text(
-                        '${_surnameController.text} ${_nameController.text}',
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Text(
-                        ' ${2023 - year} років',
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    _phone1Controller.text,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.normal,
-                    ),
-                  ),
-                ],
-              )
-            ],
-          ),
+        HistoryTabHeader(
+          pickedImagePath: _pickedImagePath,
+          surnameController: _surnameController,
+          nameController: _nameController,
+          phone1Controller: _phone1Controller,
+          year: year,
         ),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-          margin: const EdgeInsets.only(bottom: 20, left: 20, right: 20),
-          decoration: const BoxDecoration(
-            color: Color.fromARGB(255, 241, 240, 240),
-            borderRadius: BorderRadius.all(Radius.circular(10)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black12,
-                blurRadius: 5,
-                offset: Offset(0, 5),
-              ),
-            ],
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: TextField(
-                  controller: _etapController,
-                  decoration: const InputDecoration(
-                    hintText: 'Назва етапу',
-                  ),
-                ),
-              ),
-              const SizedBox(width: 10),
-              FormButton(
-                horizontalEI: 30,
-                verticalEI: 10,
-                color: AppColors.mainBlueColor,
-                prefixImage: AssetImage('assets/images/tooth.png'),
-                text: 'Зубна формула',
-                onTap: () {},
-              ),
-              const SizedBox(width: 10),
-              FormButton(
-                horizontalEI: 30,
-                verticalEI: 10,
-                color: Colors.green,
-                text: 'Створити',
-                onTap: () {},
-              ),
-            ],
-          ),
-        ),
-        ListView.builder(
-          shrinkWrap: true,
-          itemCount: 10,
-          itemBuilder: (context, index) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 20),
-              child: CommentTile(
-                  pickedImagePath: _pickedImagePath,
-                  userName: userName,
-                  historyComment: _commentControllers[index]),
-            );
+        BlocListener<TreatmentBloc, TreatmentState>(
+          listener: (context, state) {
+            if (state is TreatmentSavedState) {
+              MotionToast.success(
+                      title: const Text("Успішно"),
+                      description: const Text("Дані успішно збережено"))
+                  .show(context);
+              patientsBloc.add(GetPatientByIdEvent(widget.patientId));
+              treatmentBloc
+                  .add(GetTreatmentsByPatientIdEvent(widget.patientId));
+            } else if (state is TreatmentErrorState) {
+              final error = state.errorMessage;
+              MotionToast.error(
+                      title: const Text("Щось пішло не так"),
+                      description: const Text("Помилка завантаження даних"))
+                  .show(context);
+              print(error);
+            }
           },
+          child: BlocBuilder<TreatmentBloc, TreatmentState>(
+            bloc: treatmentBloc,
+            builder: (context, state) {
+              if (state is TreatmentsLoadedState) {
+                final treatments = state.treatments;
+                _commentControllers = List.generate(
+                    treatments.treatments.length,
+                    (index) => TextEditingController());
+                final reversedTreatments =
+                    treatments.treatments.reversed.toList();
+                return Column(
+                  children: [
+                    CreateCommentTile(
+                      etapController: _etapController,
+                      onTap: () {
+                        setState(() {
+                          final newCommentController = TextEditingController();
+                          _commentControllers.add(newCommentController);
+                          final newTreatment = Treatment(
+                            type: _etapController.text,
+                            comment: '',
+                            updatedDate: DateTime.now(),
+                            id: 0,
+                            createdDate: DateTime.now(),
+                            doctorId: 0,
+                            patientId: widget.patientId,
+                          );
+                          treatments.treatments.add(newTreatment);
+                        });
+                      },
+                    ),
+                    ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: reversedTreatments.length,
+                      itemBuilder: (context, index) {
+                        final treatment = reversedTreatments[index];
+                        _commentControllers[index].text = treatment.comment;
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 20),
+                          child: CommentTile(
+                            isEditing: treatment.id == 0 ? true : false,
+                            etap: treatment.type,
+                            pickedImagePath: _pickedImagePath,
+                            userName: userName,
+                            historyComment: _commentControllers[index],
+                            updatedDate: treatment.updatedDate
+                                .add(const Duration(hours: 3)),
+                            onDeleteTap: () {
+                              if (treatment.id != 0) {
+                                _deleteTreatment(context, treatment.id);
+
+                                setState(() {
+                                  treatments.treatments.remove(treatment);
+                                  _commentControllers.removeAt(index);
+                                });
+                              } else {
+                                setState(() {
+                                  treatments.treatments.remove(treatment);
+                                  _commentControllers.removeAt(index);
+                                });
+                              }
+                            },
+                            onSaveTap: () {
+                              if (treatment.id == 0) {
+                                _saveTreatment(
+                                    context, _commentControllers[index].text);
+                              } else {
+                                _updateTreatment(
+                                    context,
+                                    _commentControllers[index].text,
+                                    treatment.id);
+                              }
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                );
+              } else if (state is TreatmentLoadingState) {
+                return const MyProgressIndicator();
+              }
+              return const Center(child: Text('Помилка завантаження даних'));
+            },
+          ),
         ),
       ],
     );
@@ -578,7 +591,7 @@ class _DesktopDataScreenState extends State<DesktopDataScreen>
                               text: 'Зберегти',
                               color: AppColors.mainBlueColor,
                               onTap: () {
-                                _savePatient(context);
+                                _updatePatient(context);
                                 setState(() {
                                   isEditing = false;
                                 });
@@ -695,8 +708,8 @@ class _DesktopDataScreenState extends State<DesktopDataScreen>
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              children: const [
+            const Row(
+              children: [
                 Icon(Icons.person, size: 24),
                 SizedBox(width: 8),
                 Text(

@@ -11,10 +11,10 @@ class MyProgressIndicator extends StatelessWidget {
     return Expanded(
       child: Container(
         color: Colors.white,
-        child: Column(
+        child: const Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: const [
+          children: [
             SizedBox(
               height: 25,
               width: 25,

@@ -1,5 +1,3 @@
-import 'package:dental_crm_flutter_front/features/patients/view/data_screen.dart';
-
 import 'package:dental_crm_flutter_front/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
@@ -11,7 +9,7 @@ class TabletMain extends StatefulWidget {
 }
 
 class _TabletMainState extends State<TabletMain> {
-  TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
   bool _isSearching = false;
 
   @override

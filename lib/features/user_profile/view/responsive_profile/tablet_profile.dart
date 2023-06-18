@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TabletProfile extends StatefulWidget {
-  const TabletProfile({Key? key});
+  const TabletProfile({super.key});
 
   @override
   State<TabletProfile> createState() => _TabletProfileState();
@@ -22,7 +22,7 @@ class _TabletProfileState extends State<TabletProfile> {
   final TextEditingController _newPasswordController = TextEditingController();
   final TextEditingController _repPasswordController = TextEditingController();
   bool _isPasswordVisible = false;
-  bool _isNewPasswordVisible = false;
+  //bool _isNewPasswordVisible = false;
   bool _isRepeatPasswordVisible = false;
   late UserBloc _userBloc;
   String _name = ' ';
@@ -61,10 +61,10 @@ class _TabletProfileState extends State<TabletProfile> {
             return Container(
               width: MediaQuery.of(context).size.width,
               color: Colors.white,
-              child: Column(
+              child: const Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
-                children: const [
+                children: [
                   SizedBox(
                     height: 25,
                     width: 25,

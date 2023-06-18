@@ -1,7 +1,7 @@
-import 'package:bloc/bloc.dart';
 import 'package:dental_crm_flutter_front/repositories/user/models/user.dart';
 import 'package:dental_crm_flutter_front/repositories/user/user_repository.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'user_event.dart';
 part 'user_state.dart';

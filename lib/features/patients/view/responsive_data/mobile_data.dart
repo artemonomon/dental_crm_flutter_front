@@ -17,9 +17,9 @@ class _MobileDataScreenState extends State<MobileDataScreen> {
         title: const Text('Інформація про пацієнта'),
       ),
       drawer: const SideMenu(),
-      body: Column(
+      body: const Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: const [
+        children: [
           Center(
             child: Text('Сторінка інформації про пацієнта'),
           ),

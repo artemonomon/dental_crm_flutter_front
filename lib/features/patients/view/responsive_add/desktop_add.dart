@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:dental_crm_flutter_front/features/patients/bloc/patients_bloc.dart';
+import 'package:dental_crm_flutter_front/features/patients/patients_bloc/patients_bloc.dart';
 import 'package:dental_crm_flutter_front/features/patients/widgets/date_selection.dart';
 import 'package:dental_crm_flutter_front/features/patients/widgets/form_button.dart';
 import 'package:dental_crm_flutter_front/repositories/patient/models/models.dart';
@@ -278,11 +278,11 @@ class _DesktopAddPatientFormState extends State<DesktopAddPatientForm> {
   }
 
   Widget _buildHeader() {
-    return Column(
+    return const Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
-          children: const [
+          children: [
             Icon(Icons.add_circle_outline_sharp, size: 24),
             SizedBox(width: 8),
             Text(
@@ -294,7 +294,7 @@ class _DesktopAddPatientFormState extends State<DesktopAddPatientForm> {
             ),
           ],
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10),
       ],
     );
   }

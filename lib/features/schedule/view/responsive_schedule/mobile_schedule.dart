@@ -60,12 +60,8 @@ class _MobileScheduleState extends State<MobileSchedule> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Select a Patient'),
-          content: Container(
-            // Build your form for selecting a patient here.
-            // You can use DropdownButton, ListView, or any other widget as per your design.
-            child: Text(
-                'Selected Hour: $selectedHour\nSelected Patient: $selectedPatient'),
-          ),
+          content: Text(
+              'Selected Hour: $selectedHour\nSelected Patient: $selectedPatient'),
           actions: [
             TextButton(
               onPressed: () {

@@ -1,5 +1,5 @@
 import 'package:dental_crm_flutter_front/features/auth/auth_bloc/auth_bloc.dart';
-import 'package:dental_crm_flutter_front/features/patients/bloc/patients_bloc.dart';
+import 'package:dental_crm_flutter_front/features/patients/patients_bloc/patients_bloc.dart';
 import 'package:dental_crm_flutter_front/features/patients/view/responsive_data/responsive_data.dart';
 import 'package:dental_crm_flutter_front/repositories/patient/patient_repository.dart';
 import 'package:dental_crm_flutter_front/widgets/widgets.dart';
@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PatientDataScreen extends StatefulWidget {
   final int patientId;
+
   const PatientDataScreen({super.key, required this.patientId});
 
   @override

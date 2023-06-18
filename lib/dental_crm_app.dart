@@ -1,4 +1,3 @@
-import 'package:calendar_view/calendar_view.dart';
 import 'package:dental_crm_flutter_front/features/auth/auth_bloc/auth_bloc.dart';
 import 'package:dental_crm_flutter_front/features/auth/view/view.dart';
 import 'package:dental_crm_flutter_front/features/patients/view/add_screen.dart';
@@ -9,7 +8,9 @@ import 'package:dental_crm_flutter_front/repositories/auth/auth_repository.dart'
 import 'package:dental_crm_flutter_front/utils/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:syncfusion_localizations/syncfusion_localizations.dart';
 
 class MyBlocObserver extends BlocObserver {
   @override
@@ -43,10 +44,22 @@ class DentalCrmApp extends StatefulWidget {
 
 class _DentalCrmAppState extends State<DentalCrmApp> {
   AuthRepository authRepository = AuthRepository();
-  // This widget is the root of your application.
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        SfGlobalLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        SfGlobalLocalizations.delegate
+      ],
+      supportedLocales: const [
+        Locale('en', 'US'),
+        Locale('uk', 'UA'),
+      ],
+      locale: const Locale('uk', 'UA'),
       debugShowCheckedModeBanner: false,
       title: 'Dental CRM',
       theme: ThemeData(
@@ -56,7 +69,7 @@ class _DentalCrmAppState extends State<DentalCrmApp> {
             elevation: 0,
             centerTitle: true,
           ),
-          textTheme: GoogleFonts.ralewayTextTheme(Theme.of(context).textTheme)
+          textTheme: GoogleFonts.robotoTextTheme(Theme.of(context).textTheme)
               .apply(bodyColor: Colors.black),
           canvasColor: AppColors.mainBlueColor),
       routes: {
@@ -80,9 +93,9 @@ class _DentalCrmAppState extends State<DentalCrmApp> {
               body: Container(
                 color: Colors.white,
                 width: double.infinity,
-                child: Column(
+                child: const Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
+                  children: [
                     SizedBox(
                       height: 25,
                       width: 25,
@@ -101,9 +114,9 @@ class _DentalCrmAppState extends State<DentalCrmApp> {
             body: Container(
               color: Colors.white,
               width: double.infinity,
-              child: Column(
+              child: const Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
+                children: [
                   SizedBox(
                     height: 25,
                     width: 25,

@@ -1,7 +1,7 @@
 import 'package:dental_crm_flutter_front/repositories/auth/auth_repository.dart';
 import 'package:dental_crm_flutter_front/repositories/auth/models/models.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'auth_event.dart';

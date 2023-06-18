@@ -1,4 +1,4 @@
-import 'package:dental_crm_flutter_front/features/patients/bloc/patients_bloc.dart';
+import 'package:dental_crm_flutter_front/features/patients/patients_bloc/patients_bloc.dart';
 import 'package:dental_crm_flutter_front/features/patients/view/data_screen.dart';
 import 'package:dental_crm_flutter_front/repositories/patient/patient_repository.dart';
 

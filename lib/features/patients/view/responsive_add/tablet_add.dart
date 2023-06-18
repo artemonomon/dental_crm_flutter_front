@@ -17,9 +17,9 @@ class _TabletAddPatientsFormState extends State<TabletAddPatientsForm> {
         title: const Text('Пацієнти'),
       ),
       drawer: const SideMenu(),
-      body: Column(
+      body: const Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: const [
+        children: [
           Center(
             child: Text('Сторінка додавання пацієнтів'),
           ),

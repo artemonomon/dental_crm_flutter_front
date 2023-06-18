@@ -110,9 +110,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             builder: (context, state) {
                               if (state is AuthLoading) {
                                 // Show loading indicator
-                                return Column(
+                                return const Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  children: const [
+                                  children: [
                                     Align(
                                       alignment: Alignment.center,
                                       child: CircularProgressIndicator(),

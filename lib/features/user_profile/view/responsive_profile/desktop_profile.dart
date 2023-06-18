@@ -22,7 +22,7 @@ class _DesktopProfileState extends State<DesktopProfile> {
   final TextEditingController _newPasswordController = TextEditingController();
   final TextEditingController _repPasswordController = TextEditingController();
   bool _isPasswordVisible = false;
-  bool _isNewPasswordVisible = false;
+  // bool _isNewPasswordVisible = false;
   bool _isRepeatPasswordVisible = false;
   late UserBloc _userBloc;
   String _name = ' ';

@@ -1,30 +1,39 @@
 import 'dart:io';
 
-import 'package:dental_crm_flutter_front/features/patients/widgets/index.dart';
+import 'package:dental_crm_flutter_front/features/patients/widgets/widgets.dart';
 
 import 'package:dental_crm_flutter_front/utils/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:ionicons/ionicons.dart';
 
 class CommentTile extends StatefulWidget {
-  const CommentTile({
+  CommentTile({
     super.key,
     String? pickedImagePath,
     required this.userName,
     required TextEditingController historyComment,
+    required this.etap,
+    required this.updatedDate,
+    required this.onDeleteTap,
+    this.isEditing = false,
+    required this.onSaveTap,
   })  : _pickedImagePath = pickedImagePath,
         _historyComment = historyComment;
 
   final String? _pickedImagePath;
   final String userName;
   final TextEditingController _historyComment;
+  final String? etap;
+  final DateTime updatedDate;
+  final Function() onDeleteTap;
+  final Function() onSaveTap;
+  bool isEditing;
 
   @override
   State<CommentTile> createState() => _CommentTileState();
 }
 
 class _CommentTileState extends State<CommentTile> {
-  bool isEditing = true;
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -68,9 +77,11 @@ class _CommentTileState extends State<CommentTile> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'Назва етапу',
-                        style: TextStyle(
+                      Text(
+                        widget.etap == ' ' || widget.etap == ''
+                            ? 'Новий етап'
+                            : widget.etap!,
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
@@ -85,8 +96,11 @@ class _CommentTileState extends State<CommentTile> {
                                 color: AppColors.mainBlueColor),
                           ),
                           const SizedBox(width: 10),
-                          Text(
-                            DateTime.now().toString().substring(0, 16),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 2),
+                            child: Text(
+                              widget.updatedDate.toString().substring(0, 16),
+                            ),
                           )
                         ],
                       )
@@ -95,8 +109,46 @@ class _CommentTileState extends State<CommentTile> {
                 ],
               ),
               IconButton(
-                icon: const Icon(Icons.delete),
-                onPressed: () {},
+                icon: const Icon(
+                  Ionicons.trash_outline,
+                  color: Colors.red,
+                  size: 30,
+                ),
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                    AppColors.mainBlueColor,
+                  ),
+                ),
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text('Видалити пацієнта?'),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              widget.onDeleteTap();
+                              Navigator.pop(context);
+                            },
+                            child: const Text('Так'),
+                          ),
+                          ElevatedButton(
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                AppColors.mainBlueColor,
+                              ),
+                            ),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Text('Ні'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
               ),
             ],
           ),
@@ -106,7 +158,7 @@ class _CommentTileState extends State<CommentTile> {
             maxLines: null,
           ),
           const SizedBox(height: 20),
-          if (!isEditing) ...[
+          if (!widget.isEditing) ...[
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -117,14 +169,14 @@ class _CommentTileState extends State<CommentTile> {
                   color: AppColors.mainBlueColor,
                   onTap: () {
                     setState(() {
-                      isEditing = true;
+                      widget.isEditing = true;
                     });
                   },
                 ),
               ],
             ),
           ],
-          if (isEditing) ...[
+          if (widget.isEditing) ...[
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -135,8 +187,9 @@ class _CommentTileState extends State<CommentTile> {
                   color: AppColors.mainBlueColor,
                   onTap: () {
                     setState(() {
-                      isEditing = false;
+                      widget.isEditing = false;
                     });
+                    widget.onSaveTap();
                   },
                 ),
                 const SizedBox(width: 10),
@@ -148,7 +201,7 @@ class _CommentTileState extends State<CommentTile> {
                   color: const Color.fromARGB(255, 201, 199, 199),
                   onTap: () {
                     setState(() {
-                      isEditing = false;
+                      widget.isEditing = false;
                     });
                   },
                 ),
