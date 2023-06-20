@@ -34,7 +34,7 @@ class DoctorRepository {
     return Doctor.fromJson(response.data);
   }
 
-  Future<Doctors> getPatients() async {
+  Future<Doctors> getDoctors() async {
     final url = '$mainUrl/doctors';
 
     var value = await storage.read(key: 'token');

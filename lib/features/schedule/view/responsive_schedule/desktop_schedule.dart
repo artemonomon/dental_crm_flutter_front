@@ -2,6 +2,8 @@ import 'package:dental_crm_flutter_front/features/schedule/bloc/appointment_bloc
 import 'package:dental_crm_flutter_front/features/schedule/widgets/appointment.dart';
 import 'package:dental_crm_flutter_front/repositories/appointment/appointment_repository.dart';
 import 'package:dental_crm_flutter_front/repositories/appointment/models/models.dart';
+import 'package:dental_crm_flutter_front/repositories/doctor/doctor_repository.dart';
+import 'package:dental_crm_flutter_front/repositories/doctor/models/models.dart';
 import 'package:dental_crm_flutter_front/repositories/patient/models/models.dart';
 import 'package:dental_crm_flutter_front/repositories/patient/patient_repository.dart';
 import 'package:dental_crm_flutter_front/utils/app_colors.dart';
@@ -56,6 +58,8 @@ class _DesktopScheduleState extends State<DesktopSchedule> {
   AppointmentRepository appointmentRepository = AppointmentRepository();
   late AppointmentBloc appointmentBloc;
   PatientRepository patientRepository = PatientRepository();
+  DoctorRepository doctorRepository = DoctorRepository();
+
 
   final TextEditingController patientNameController = TextEditingController();
   final TextEditingController doctorNameController = TextEditingController();
@@ -64,7 +68,9 @@ class _DesktopScheduleState extends State<DesktopSchedule> {
   DateTime selectedDate = DateTime.now();
   DateTime selectedEndDate = DateTime.now().add(const Duration(hours: 1));
   List<Patient> patients = [];
+  List<Doctor> doctors = [];
   Patient? selectedPatient;
+  Doctor? selectedDoctor;
 
   String status = 'Заплановано';
 
@@ -74,6 +80,7 @@ class _DesktopScheduleState extends State<DesktopSchedule> {
     appointmentBloc = AppointmentBloc(AppointmentRepository());
     appointmentBloc.add(GetAppointmentsEvent());
     loadPatients();
+    loadDoctors();
   }
 
   @override
@@ -92,7 +99,7 @@ class _DesktopScheduleState extends State<DesktopSchedule> {
       duration: selectedEndDate.difference(selectedDate),
       status: status,
       patientId: selectedPatient!.id,
-      doctorId: 1,
+      doctorId: selectedDoctor!.id,
       comment: commentController.text,
     );
 
@@ -104,25 +111,28 @@ class _DesktopScheduleState extends State<DesktopSchedule> {
 
     for (var element in appointments.items) {
       getPatientById(element.patientId).then((patient) {
-        final existingAppointmentIndex = dataSource.appointments.indexWhere(
-          (appointment) => appointment.appointmentId == element.id,
-        );
-
-        if (existingAppointmentIndex == -1) {
-          addNewAppointment(
-            element.appointmentDate,
-            element.appointmentDate.add(element.duration),
-            element.status,
-            Colors.blue,
-            patient.name,
-            element.doctorId.toString(),
-            element.comment,
-            element.id,
+        getDoctorById(element.doctorId).then((doctor) {
+          final existingAppointmentIndex = dataSource.appointments.indexWhere(
+                (appointment) => appointment.appointmentId == element.id,
           );
-        }
+
+          if (existingAppointmentIndex == -1) {
+            addNewAppointment(
+              element.appointmentDate,
+              element.appointmentDate.add(element.duration),
+              element.status,
+              Colors.blue,
+              patient.name,
+              doctor.name,
+              element.comment,
+              element.id,
+            );
+          }
+        });
       });
     }
   }
+
 
   Future<void> loadPatients() async {
     try {
@@ -137,6 +147,20 @@ class _DesktopScheduleState extends State<DesktopSchedule> {
     }
   }
 
+
+  Future<void> loadDoctors() async {
+    try {
+      final doctorsData = await doctorRepository.getDoctors();
+      final doctorsList = doctorsData.items; // Access the items property
+
+      setState(() {
+        doctors = doctorsList;
+      });
+    } catch (error) {
+      print('Error loading doctors: $error');
+    }
+  }
+
   Future<Patient> getPatientById(int patientId) async {
     try {
       final patient = await patientRepository.getPatientById(patientId);
@@ -145,6 +169,16 @@ class _DesktopScheduleState extends State<DesktopSchedule> {
       throw Exception('Failed to get patient by id: $error');
     }
   }
+
+  Future<Doctor> getDoctorById(int doctorId) async {
+    try {
+      final doctor = await doctorRepository.getDoctorById(doctorId);
+      return doctor;
+    } catch (error) {
+      throw Exception('Failed to get doctor by id: $error');
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -195,7 +229,7 @@ class _DesktopScheduleState extends State<DesktopSchedule> {
                               status,
                               Colors.blue,
                               selectedPatient!.name,
-                              doctorNameController.text,
+                              selectedDoctor!.name,
                               commentController.text,
                               state.appointment.id);
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -248,6 +282,7 @@ class _DesktopScheduleState extends State<DesktopSchedule> {
                   } else if (state is AppointmentErrorState) {
                     return Text('Error: ${state.errorMessage}');
                   } else if (state is AppointmentDeletedState) {
+                    appointmentBloc.add(GetAppointmentsEvent());
                     return SfCalendar(
                       dataSource: dataSource,
                       view: CalendarView.week,
@@ -406,9 +441,30 @@ class _DesktopScheduleState extends State<DesktopSchedule> {
                       },
                     ).toList(),
                   ),
-                  TextField(
-                    controller: doctorNameController,
+                  DropdownButtonFormField<Doctor>(
                     decoration: const InputDecoration(labelText: 'Лікар'),
+                    value: selectedDoctor,
+                    onChanged: (Doctor? newValue) {
+                      setState(() {
+                        selectedDoctor = newValue;
+                      });
+                    },
+                    dropdownColor: AppColors.mainBlueColor,
+                    items: doctors.map<DropdownMenuItem<Doctor>>(
+                          (Doctor doctor) {
+                        return DropdownMenuItem<Doctor>(
+                          value: doctor,
+                          child: Row(children: [
+                            Text(doctor.name),
+                            const SizedBox(width: 10),
+                            Text(
+                              " ${doctor.specialization}",
+                              style: const TextStyle(fontSize: 12),
+                            ),
+                          ]),
+                        );
+                      },
+                    ).toList(),
                   ),
                   const SizedBox(height: 10),
                   Row(

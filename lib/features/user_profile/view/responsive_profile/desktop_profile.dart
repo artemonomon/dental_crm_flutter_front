@@ -1,6 +1,5 @@
 import 'package:dental_crm_flutter_front/features/user_profile/bloc/user_bloc.dart';
 import 'package:dental_crm_flutter_front/features/user_profile/widgets/form_button.dart';
-import 'package:dental_crm_flutter_front/features/user_profile/widgets/form_pass_field.dart';
 import 'package:dental_crm_flutter_front/features/user_profile/widgets/form_text_field.dart';
 import 'package:dental_crm_flutter_front/repositories/user/user_repository.dart';
 import 'package:dental_crm_flutter_front/utils/utils.dart';
@@ -21,9 +20,6 @@ class _DesktopProfileState extends State<DesktopProfile> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _newPasswordController = TextEditingController();
   final TextEditingController _repPasswordController = TextEditingController();
-  bool _isPasswordVisible = false;
-  // bool _isNewPasswordVisible = false;
-  bool _isRepeatPasswordVisible = false;
   late UserBloc _userBloc;
   String _name = ' ';
   String _email = ' ';
@@ -203,6 +199,7 @@ class _DesktopProfileState extends State<DesktopProfile> {
                 ],
               ),
             ),
+
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -220,82 +217,25 @@ class _DesktopProfileState extends State<DesktopProfile> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    padding: const EdgeInsets.only(bottom: 20),
-                    child: const Text(
-                      'Змінити пароль',
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  FormPasswordField(
-                    controller: _passwordController,
-                    hintText: 'Ваш поточний пароль',
-                    prefixIcon: const Icon(Icons.lock),
-                    suffixIcon: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _isPasswordVisible =
-                              !_isPasswordVisible; // Toggle the visibility state
-                        });
-                      },
-                      child: Icon(
-                        _isPasswordVisible
-                            ? Icons.visibility_off
-                            : Icons.visibility,
-                      ),
-                    ),
-                    obscureText: !_isPasswordVisible,
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
+                  const Row(
                     children: [
-                      Expanded(
-                        child: FormPasswordField(
-                          controller: _newPasswordController,
-                          hintText: 'Ваш новий пароль',
-                          prefixIcon: const Icon(Icons.lock),
-                          suffixIcon: GestureDetector(
-                            child: Icon(
-                              _isRepeatPasswordVisible
-                                  ? Icons.visibility_off
-                                  : Icons.visibility,
-                              color: Colors.transparent,
-                            ),
-                          ),
-                          obscureText: !_isRepeatPasswordVisible,
-                        ),
-                      ),
-                      const SizedBox(width: 20),
-                      Expanded(
-                        child: FormPasswordField(
-                          controller: _repPasswordController,
-                          hintText: 'Повторіть пароль',
-                          prefixIcon: const Icon(Icons.lock),
-                          suffixIcon: GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                _isRepeatPasswordVisible =
-                                    !_isRepeatPasswordVisible; // Toggle the visibility state
-                              });
-                            },
-                            child: Icon(
-                              _isRepeatPasswordVisible
-                                  ? Icons.visibility_off
-                                  : Icons.visibility,
-                            ),
-                          ),
-                          obscureText: !_isRepeatPasswordVisible,
-                        ),
-                      )
+                      Icon(Icons.download),
+                    SizedBox(width: 10,),
+                    Text('Завантажити десктоп та мобільну версію додатку',),
                     ],
                   ),
-                  const SizedBox(height: 20),
+                  SizedBox(height: 20,),
                   FormButton(
-                    text: "Зберегти зміни",
+                    text: "Завантаження мобільної версії (Android)",
+                    color: Colors.green,
+                    onTap: () {},
+                  ),
+                  SizedBox(height: 20,),
+                  FormButton(
+                    text: "Завантаження десктоп версії (Windows)",
                     color: AppColors.mainBlueColor,
                     onTap: () {},
-                  )
+                  ),
                 ],
               ),
             ),

@@ -239,7 +239,7 @@ class _DesktopAddPatientFormState extends State<DesktopAddPatientForm> {
                       DateSelection(
                         onDateSelected: (DateTime date) {
                           final formattedDate =
-                              DateFormat('yyyy-MM-ddTHH:mm:ssZ').format(date);
+                              DateFormat('yyyy-MM-ddTHH:mm:ss').format(date);
                           setState(() {
                             selectedDate = formattedDate;
                           });

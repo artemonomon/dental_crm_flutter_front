@@ -2,7 +2,6 @@ import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:dental_crm_flutter_front/features/patients/widgets/widgets.dart';
 import 'package:dental_crm_flutter_front/widgets/widgets.dart';
 import 'package:flutter/material.dart';
-import 'package:ionicons/ionicons.dart';
 
 import '../../../../repositories/patient/models/models.dart';
 import '../../../../utils/utils.dart';
@@ -197,7 +196,7 @@ class _DesktopFormulaState extends State<DesktopFormula> {
                                     ],
                                   ),
                                   const SizedBox(height: 10),
-                                  Row(
+                                  const Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceAround,
                                     children: [
@@ -210,35 +209,35 @@ class _DesktopFormulaState extends State<DesktopFormula> {
                                       // ),
                                       Column(
                                         children: [
-                                          const Text('Ураження'),
-                                          const SizedBox(height: 10),
+                                          Text('Ураження'),
+                                          SizedBox(height: 10),
                                           //Here i need to show all teeth with damage
-                                          ListView.builder(
-                                            shrinkWrap: true,
-                                            physics:
-                                                const NeverScrollableScrollPhysics(),
-                                            itemCount: 5,
-                                            itemBuilder: (context, index) {
-                                              // final damage =
-                                              //     toothDamage?[index];
-
-                                              return const Text(
-                                                // '${damage?['damage']} - ${damage?['tooth']}',
-                                                'damage',
-                                                style: TextStyle(fontSize: 14),
-                                              );
-                                            },
-                                          ),
+                                          // ListView.builder(
+                                          //   shrinkWrap: true,
+                                          //   physics:
+                                          //       const NeverScrollableScrollPhysics(),
+                                          //   itemCount: 5,
+                                          //   itemBuilder: (context, index) {
+                                          //     // final damage =
+                                          //     //     toothDamage?[index];
+                                          //
+                                          //     return const Text(
+                                          //       // '${damage?['damage']} - ${damage?['tooth']}',
+                                          //       'damage',
+                                          //       style: TextStyle(fontSize: 14),
+                                          //     );
+                                          //   },
+                                          // ),
                                         ],
                                       ),
-                                      const Column(
+                                      Column(
                                         children: [
                                           Text('Пародонт'),
                                           SizedBox(height: 10),
                                           //Here i need to show all teeth with treatment
                                         ],
                                       ),
-                                      const Column(
+                                      Column(
                                         children: [
                                           Text('Endo'),
                                           SizedBox(height: 10),
