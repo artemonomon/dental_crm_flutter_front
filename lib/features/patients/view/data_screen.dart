@@ -6,10 +6,12 @@ import 'package:dental_crm_flutter_front/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class PatientDataScreen extends StatefulWidget {
-  final int patientId;
+import '../../../repositories/patient/models/models.dart';
 
-  const PatientDataScreen({super.key, required this.patientId});
+class PatientDataScreen extends StatefulWidget {
+  final Patient patient;
+
+  const PatientDataScreen({super.key, required this.patient});
 
   @override
   State<PatientDataScreen> createState() => _PatientDataScreenState();
@@ -30,7 +32,7 @@ class _PatientDataScreenState extends State<PatientDataScreen> {
         child: ResponsiveLayout(
           mobileScaffold: const MobileDataScreen(),
           tabletScaffold: const TabletDataScreen(),
-          desktopScaffold: DesktopDataScreen(patientId: widget.patientId),
+          desktopScaffold: DesktopDataScreen(patient: widget.patient),
         ),
       ),
     );

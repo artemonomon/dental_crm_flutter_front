@@ -7,10 +7,12 @@ class CreateCommentTile extends StatelessWidget {
     super.key,
     required TextEditingController etapController,
     required this.onTap,
+    this.onAddTooth,
   }) : _etapController = etapController;
 
   final TextEditingController _etapController;
   final Function()? onTap;
+  final Function()? onAddTooth;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +47,7 @@ class CreateCommentTile extends StatelessWidget {
             color: AppColors.mainBlueColor,
             prefixImage: const AssetImage('assets/images/tooth.png'),
             text: 'Зубна формула',
-            onTap: () {},
+            onTap: onAddTooth,
           ),
           const SizedBox(width: 10),
           FormButton(

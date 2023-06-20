@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:dental_crm_flutter_front/features/patients/patients_bloc/patients_bloc.dart';
 import 'package:dental_crm_flutter_front/features/patients/treatments_bloc/treatment_bloc.dart';
+import 'package:dental_crm_flutter_front/features/patients/view/view.dart';
 import 'package:dental_crm_flutter_front/features/patients/widgets/widgets.dart';
 import 'package:dental_crm_flutter_front/features/user_profile/bloc/user_bloc.dart';
 import 'package:dental_crm_flutter_front/repositories/patient/models/models.dart';
@@ -20,10 +21,9 @@ import 'package:intl/intl.dart';
 import 'package:motion_toast/motion_toast.dart';
 
 class DesktopDataScreen extends StatefulWidget {
-  final int patientId;
+  final Patient patient;
 
-  const DesktopDataScreen({Key? key, required this.patientId})
-      : super(key: key);
+  const DesktopDataScreen({Key? key, required this.patient}) : super(key: key);
 
   @override
   State<DesktopDataScreen> createState() => _DesktopDataScreenState();
@@ -65,8 +65,8 @@ class _DesktopDataScreenState extends State<DesktopDataScreen>
     userBloc = UserBloc(userRepository);
     treatmentBloc = TreatmentBloc(treatmentRepository);
     userBloc.add(FetchUserEvent());
-    patientsBloc.add(GetPatientByIdEvent(widget.patientId));
-    treatmentBloc.add(GetTreatmentsByPatientIdEvent(widget.patientId));
+    patientsBloc.add(GetPatientByIdEvent(widget.patient.id));
+    treatmentBloc.add(GetTreatmentsByPatientIdEvent(widget.patient.id));
     _tabController = TabController(length: 2, vsync: this);
   }
 
@@ -106,14 +106,14 @@ class _DesktopDataScreenState extends State<DesktopDataScreen>
       dateOfBirth: dateOfBirth,
     );
 
-    patientsBloc.add(UpdatePatientEvent(widget.patientId, request));
+    patientsBloc.add(UpdatePatientEvent(widget.patient.id, request));
   }
 
   void _saveTreatment(BuildContext context, String comment) {
     SaveTreatmentRequest request;
     final treatmentsBloc = BlocProvider.of<TreatmentBloc>(context);
     request = SaveTreatmentRequest(
-      patientId: widget.patientId,
+      patientId: widget.patient.id,
       doctorId: 1,
       type: _etapController.text,
       comment: comment,
@@ -126,7 +126,7 @@ class _DesktopDataScreenState extends State<DesktopDataScreen>
     UpdateTreatmentRequest request;
     final treatmentsBloc = BlocProvider.of<TreatmentBloc>(context);
     request = UpdateTreatmentRequest(
-      patientId: widget.patientId,
+      patientId: widget.patient.id,
       doctorId: 1,
       type: _etapController.text,
       comment: comment,
@@ -245,9 +245,9 @@ class _DesktopDataScreenState extends State<DesktopDataScreen>
                       title: const Text("Успішно"),
                       description: const Text("Дані успішно збережено"))
                   .show(context);
-              patientsBloc.add(GetPatientByIdEvent(widget.patientId));
+              patientsBloc.add(GetPatientByIdEvent(widget.patient.id));
               treatmentBloc
-                  .add(GetTreatmentsByPatientIdEvent(widget.patientId));
+                  .add(GetTreatmentsByPatientIdEvent(widget.patient.id));
             } else if (state is TreatmentErrorState) {
               final error = state.errorMessage;
               MotionToast.error(
@@ -282,10 +282,20 @@ class _DesktopDataScreenState extends State<DesktopDataScreen>
                             id: 0,
                             createdDate: DateTime.now(),
                             doctorId: 0,
-                            patientId: widget.patientId,
+                            patientId: widget.patient.id,
                           );
                           treatments.treatments.add(newTreatment);
                         });
+                      },
+                      onAddTooth: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DentalFormulaScreen(
+                              patient: widget.patient,
+                            ),
+                          ),
+                        );
                       },
                     ),
                     ListView.builder(
@@ -737,7 +747,7 @@ class _DesktopDataScreenState extends State<DesktopDataScreen>
                             TextButton(
                               onPressed: () {
                                 patientsBloc
-                                    .add(DeletePatientEvent(widget.patientId));
+                                    .add(DeletePatientEvent(widget.patient.id));
                                 Navigator.pop(context);
                               },
                               child: const Text('Так'),

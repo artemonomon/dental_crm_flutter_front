@@ -100,7 +100,7 @@ class _DesktopMainState extends State<DesktopMain> {
                                                     MaterialPageRoute(
                                                       builder: (context) =>
                                                           PatientDataScreen(
-                                                        patientId: patient.id,
+                                                        patient: patient,
                                                       ),
                                                     ),
                                                   );
@@ -130,7 +130,7 @@ class _DesktopMainState extends State<DesktopMain> {
                                                     MaterialPageRoute(
                                                       builder: (context) =>
                                                           PatientDataScreen(
-                                                        patientId: patient.id,
+                                                        patient: patient,
                                                       ),
                                                     ),
                                                   );

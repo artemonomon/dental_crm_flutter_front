@@ -4,3 +4,4 @@ export 'form_button.dart';
 export 'form_text_field.dart';
 export 'history_tab_header.dart';
 export 'create_comment_tile.dart';
+export 'formula_header.dart';
