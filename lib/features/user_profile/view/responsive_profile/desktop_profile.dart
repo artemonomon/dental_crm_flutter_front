@@ -6,6 +6,7 @@ import 'package:dental_crm_flutter_front/utils/utils.dart';
 import 'package:dental_crm_flutter_front/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DesktopProfile extends StatefulWidget {
   const DesktopProfile({super.key});
@@ -23,6 +24,8 @@ class _DesktopProfileState extends State<DesktopProfile> {
   late UserBloc _userBloc;
   String _name = ' ';
   String _email = ' ';
+  final Uri _url = Uri.parse(
+      'https://docs.google.com/uc?export=download&id=1tswypAbxjw8ke56ESewlEuKAuqUUiu3t');
 
   @override
   void initState() {
@@ -41,6 +44,12 @@ class _DesktopProfileState extends State<DesktopProfile> {
     super.dispose();
   }
 
+  Future<void> downloadAndroidInstaller() async {
+    if (!await launchUrl(_url)) {
+      throw Exception('Could not launch $_url');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,10 +64,10 @@ class _DesktopProfileState extends State<DesktopProfile> {
                 return Expanded(
                   child: Container(
                     color: Colors.white,
-                    child: Column(
+                    child: const Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      children: const [
+                      children: [
                         SizedBox(
                           height: 25,
                           width: 25,
@@ -82,7 +91,7 @@ class _DesktopProfileState extends State<DesktopProfile> {
                 );
               } else {
                 return const Center(
-                  child: Text('Something went wrong!'),
+                  child: Text('Щось пішло не так!'),
                 );
               }
             },
@@ -176,65 +185,42 @@ class _DesktopProfileState extends State<DesktopProfile> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    padding: const EdgeInsets.only(bottom: 20),
-                    child: const Text(
-                      'Змінити ім\'я',
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  FormTextField(
-                    controller: _nameController,
-                    hintText: 'Введіть нове ім\'я',
-                    icon: const Icon(Icons.person, color: Colors.black),
-                    obscureText: false,
-                  ),
-                  const SizedBox(height: 20),
-                  FormButton(
-                    text: "Зберегти зміни",
-                    color: AppColors.mainBlueColor,
-                    onTap: () {},
-                  )
-                ],
-              ),
-            ),
-
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-              margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-              decoration: const BoxDecoration(
-                color: Color.fromARGB(255, 241, 240, 240),
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black12,
-                    blurRadius: 5,
-                    offset: Offset(0, 5),
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
                   const Row(
                     children: [
                       Icon(Icons.download),
-                    SizedBox(width: 10,),
-                    Text('Завантажити десктоп та мобільну версію додатку',),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        'Завантажити десктоп та мобільну версію додатку',
+                      ),
                     ],
                   ),
-                  SizedBox(height: 20,),
-                  FormButton(
-                    text: "Завантаження мобільної версії (Android)",
-                    color: Colors.green,
-                    onTap: () {},
+                  const SizedBox(
+                    height: 20,
                   ),
-                  SizedBox(height: 20,),
-                  FormButton(
-                    text: "Завантаження десктоп версії (Windows)",
-                    color: AppColors.mainBlueColor,
-                    onTap: () {},
+                  Row(
+                    children: [
+                      FormButton(
+                        text: "Завантаження мобільної версії (Android)",
+                        color: Colors.green,
+                        onTap: () {
+                          downloadAndroidInstaller();
+                        },
+                      ),
+                    ],
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      FormButton(
+                        text: "Завантаження десктоп версії (Windows)",
+                        color: AppColors.mainBlueColor,
+                        onTap: () {},
+                      ),
+                    ],
                   ),
                 ],
               ),

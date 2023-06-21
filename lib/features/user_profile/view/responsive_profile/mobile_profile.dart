@@ -7,6 +7,7 @@ import 'package:dental_crm_flutter_front/utils/utils.dart';
 import 'package:dental_crm_flutter_front/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MobileProfile extends StatefulWidget {
   const MobileProfile({Key? key});
@@ -21,6 +22,8 @@ class _MobileProfileState extends State<MobileProfile> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _newPasswordController = TextEditingController();
   final TextEditingController _repPasswordController = TextEditingController();
+  final Uri _url = Uri.parse(
+      'https://docs.google.com/uc?export=download&id=1tswypAbxjw8ke56ESewlEuKAuqUUiu3t');
   bool _isPasswordVisible = false;
   bool _isNewPasswordVisible = false;
   bool _isRepeatPasswordVisible = false;
@@ -45,6 +48,12 @@ class _MobileProfileState extends State<MobileProfile> {
     super.dispose();
   }
 
+  Future<void> downloadAndroidInstaller() async {
+    if (!await launchUrl(_url)) {
+      throw Exception('Could not launch $_url');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,10 +70,10 @@ class _MobileProfileState extends State<MobileProfile> {
             return Container(
               width: MediaQuery.of(context).size.width,
               color: Colors.white,
-              child: Column(
+              child: const Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
-                children: const [
+                children: [
                   SizedBox(
                     height: 25,
                     width: 25,
@@ -104,18 +113,14 @@ class _MobileProfileState extends State<MobileProfile> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 20,
-                ),
-                margin: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 20,
-                ),
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 241, 240, 240),
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: const [
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                margin:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                decoration: const BoxDecoration(
+                  color: Color.fromARGB(255, 241, 240, 240),
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  boxShadow: [
                     BoxShadow(
                       color: Colors.black12,
                       blurRadius: 5,
@@ -131,42 +136,43 @@ class _MobileProfileState extends State<MobileProfile> {
                       child: const Text(
                         'Інформація про аккаунт',
                         style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
+                            fontSize: 24, fontWeight: FontWeight.bold),
                       ),
                     ),
-                    Column(
+                    Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Center(
-                          child: Container(
-                            margin: const EdgeInsets.only(left: 20, top: 10),
-                            width: 100,
-                            height: 100,
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              image: DecorationImage(
-                                fit: BoxFit.cover,
-                                image: AssetImage(
-                                  'assets/images/profile2.png',
-                                ),
-                              ),
+                        Container(
+                          width: 100,
+                          height: 100,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image: AssetImage('assets/images/profile2.png'),
                             ),
                           ),
                         ),
-                        const SizedBox(height: 30),
+                        const SizedBox(width: 20),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Ім\'я:  $_name',
-                              style: TextStyle(fontSize: 20),
+                              'Ім\'я:',
+                              style: const TextStyle(fontSize: 20),
                             ),
-                            SizedBox(height: 10),
                             Text(
-                              'Email:  $_email',
-                              style: TextStyle(fontSize: 16),
+                              _name,
+                              style: const TextStyle(fontSize: 20),
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                              "Пошта: ",
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                            Text(
+                              _email,
+                              style: const TextStyle(fontSize: 16),
                             ),
                           ],
                         ),
@@ -176,18 +182,14 @@ class _MobileProfileState extends State<MobileProfile> {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 20,
-                ),
-                margin: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 20,
-                ),
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 241, 240, 240),
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: const [
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                margin:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                decoration: const BoxDecoration(
+                  color: Color.fromARGB(255, 241, 240, 240),
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                  boxShadow: [
                     BoxShadow(
                       color: Colors.black12,
                       blurRadius: 5,
@@ -198,123 +200,54 @@ class _MobileProfileState extends State<MobileProfile> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      padding: const EdgeInsets.only(bottom: 20),
-                      child: const Text(
-                        'Змінити ім\'я',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
+                    const Row(
+                      children: [
+                        Icon(Icons.download),
+                        SizedBox(
+                          width: 10,
                         ),
-                      ),
-                    ),
-                    FormTextField(
-                      controller: _nameController,
-                      hintText: 'Введіть нове ім\'я',
-                      icon: const Icon(Icons.person, color: Colors.black),
-                      obscureText: false,
-                    ),
-                    const SizedBox(height: 20),
-                    FormButton(
-                      text: 'Зберегти зміни',
-                      color: AppColors.mainBlueColor,
-                      onTap: () {},
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 20,
-                ),
-                margin: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 20,
-                ),
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 241, 240, 240),
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 5,
-                      offset: Offset(0, 5),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.only(bottom: 20),
-                      child: const Text(
-                        'Змінити пароль',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Завантажити десктоп або',
+                            ),
+                            Text(
+                              'мобільну версію',
+                            ),
+                          ],
                         ),
-                      ),
+                      ],
                     ),
-                    FormPasswordField(
-                      controller: _passwordController,
-                      hintText: 'Ваш поточний пароль',
-                      suffixIcon: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _isPasswordVisible = !_isPasswordVisible;
-                          });
-                        },
-                        child: Icon(
-                          _isPasswordVisible
-                              ? Icons.visibility_off
-                              : Icons.visibility,
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Row(
+                      children: [
+                        FormButton(
+                          horizontalEI: 15,
+                          verticalEI: 10,
+                          text: "Android версія",
+                          color: Colors.green,
+                          onTap: () {
+                            downloadAndroidInstaller();
+                          },
                         ),
-                      ),
-                      obscureText: !_isPasswordVisible,
+                      ],
                     ),
-                    const SizedBox(height: 20),
-                    FormPasswordField(
-                      controller: _newPasswordController,
-                      hintText: 'Ваш новий пароль',
-                      suffixIcon: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _isNewPasswordVisible = !_isNewPasswordVisible;
-                          });
-                        },
-                        child: Icon(
-                          _isNewPasswordVisible
-                              ? Icons.visibility_off
-                              : Icons.visibility,
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Row(
+                      children: [
+                        FormButton(
+                          horizontalEI: 10,
+                          verticalEI: 10,
+                          text: "Windows версія",
+                          color: AppColors.mainBlueColor,
+                          onTap: () {},
                         ),
-                      ),
-                      obscureText: !_isNewPasswordVisible,
-                    ),
-                    const SizedBox(height: 20),
-                    FormPasswordField(
-                      controller: _repPasswordController,
-                      hintText: 'Ваш новий пароль',
-                      suffixIcon: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _isRepeatPasswordVisible =
-                                !_isRepeatPasswordVisible;
-                          });
-                        },
-                        child: Icon(
-                          _isRepeatPasswordVisible
-                              ? Icons.visibility_off
-                              : Icons.visibility,
-                        ),
-                      ),
-                      obscureText: !_isRepeatPasswordVisible,
-                    ),
-                    const SizedBox(height: 20),
-                    FormButton(
-                      text: 'Зберегти зміни',
-                      color: AppColors.mainBlueColor,
-                      onTap: () {},
+                      ],
                     ),
                   ],
                 ),

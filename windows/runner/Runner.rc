@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "dental_crm_flutter_front" "\0"
+            VALUE "CompanyName", "com.dobriak.artem" "\0"
+            VALUE "FileDescription", "Dentas" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "dental_crm_flutter_front" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2023 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "dental_crm_flutter_front.exe" "\0"
-            VALUE "ProductName", "dental_crm_flutter_front" "\0"
+            VALUE "InternalName", "Dentas" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2023 com.dobriak.artem All rights reserved." "\0"
+            VALUE "OriginalFilename", "dentas_crm.exe" "\0"
+            VALUE "ProductName", "Dentas" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END
