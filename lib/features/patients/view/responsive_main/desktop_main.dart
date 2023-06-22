@@ -139,7 +139,7 @@ class _DesktopMainState extends State<DesktopMain> {
                                             },
                                           )
                                     : const Center(
-                                        child: Text('No data'),
+                                        child: Text('Дані відсутні'),
                                       ),
                       ),
                     ],
@@ -150,14 +150,11 @@ class _DesktopMainState extends State<DesktopMain> {
           ),
         ],
       ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.all(20),
-        child: FloatingActionButton(
-          onPressed: () {
-            Navigator.pushNamed(context, '/patients/add');
-          },
-          child: const Icon(Icons.add),
-        ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, '/patients/add');
+        },
+        child: const Icon(Icons.add),
       ),
     );
   }
@@ -185,10 +182,9 @@ class _DesktopMainState extends State<DesktopMain> {
         setState(() {
           _isSearching = value.isNotEmpty;
           if (_isSearching) {
-            // Filter the patients list based on the search query
             searchResults = patients.where((patient) {
               final name = patient.name.toLowerCase();
-              final phone = patient.phone1.toLowerCase();
+              final phone = patient.phone1.toLowerCase().replaceAll(' ', '');
               final query = value.toLowerCase();
               return name.contains(query) || phone.contains(query);
             }).toList();

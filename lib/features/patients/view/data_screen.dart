@@ -30,8 +30,10 @@ class _PatientDataScreenState extends State<PatientDataScreen> {
           }
         },
         child: ResponsiveLayout(
-          mobileScaffold: const MobileDataScreen(),
-          tabletScaffold: const TabletDataScreen(),
+          mobileScaffold: MobileDataScreen(patient: widget.patient),
+          tabletScaffold: TabletDataScreen(
+            patient: widget.patient,
+          ),
           desktopScaffold: DesktopDataScreen(patient: widget.patient),
         ),
       ),

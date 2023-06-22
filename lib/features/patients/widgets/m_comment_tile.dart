@@ -6,8 +6,8 @@ import 'package:dental_crm_flutter_front/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
 
-class CommentTile extends StatefulWidget {
-  CommentTile({
+class MCommentTile extends StatefulWidget {
+  MCommentTile({
     super.key,
     String? pickedImagePath,
     required this.userName,
@@ -30,15 +30,15 @@ class CommentTile extends StatefulWidget {
   bool isEditing;
 
   @override
-  State<CommentTile> createState() => _CommentTileState();
+  State<MCommentTile> createState() => _MCommentTileState();
 }
 
-class _CommentTileState extends State<CommentTile> {
+class _MCommentTileState extends State<MCommentTile> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-      margin: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      margin: const EdgeInsets.symmetric(horizontal: 10),
       decoration: const BoxDecoration(
         color: Color.fromARGB(255, 241, 240, 240),
         borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -86,7 +86,7 @@ class _CommentTileState extends State<CommentTile> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Row(
+                      Column(
                         children: [
                           Text(
                             widget.userName,
@@ -160,10 +160,10 @@ class _CommentTileState extends State<CommentTile> {
           const SizedBox(height: 20),
           if (!widget.isEditing) ...[
             Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 FormButton(
-                  horizontalEI: 30,
+                  horizontalEI: 20,
                   verticalEI: 10,
                   text: 'Редагувати',
                   color: AppColors.mainBlueColor,
@@ -178,10 +178,10 @@ class _CommentTileState extends State<CommentTile> {
           ],
           if (widget.isEditing) ...[
             Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 FormButton(
-                  horizontalEI: 30,
+                  horizontalEI: 20,
                   verticalEI: 10,
                   text: 'Зберегти',
                   color: AppColors.mainBlueColor,
@@ -194,7 +194,7 @@ class _CommentTileState extends State<CommentTile> {
                 ),
                 const SizedBox(width: 10),
                 FormButton(
-                  horizontalEI: 30,
+                  horizontalEI: 20,
                   verticalEI: 10,
                   text: 'Відмінити',
                   textColor: Colors.black,

@@ -24,7 +24,7 @@ class MobileSchedule extends StatefulWidget {
 }
 
 final CustomAppointmentDataSource mdataSource =
-CustomAppointmentDataSource(mgetAppointments());
+    CustomAppointmentDataSource(mgetAppointments());
 
 List<CustomAppointment> mgetAppointments() {
   List<CustomAppointment> appointments = <CustomAppointment>[];
@@ -32,7 +32,8 @@ List<CustomAppointment> mgetAppointments() {
   return appointments;
 }
 
-void maddNewAppointment(DateTime startTime,
+void maddNewAppointment(
+    DateTime startTime,
     DateTime endTime,
     String subject,
     Color color,
@@ -92,7 +93,7 @@ class _MobileScheduleState extends State<MobileSchedule> {
     SaveAppointmentRequest request;
     final appointmentBloc = BlocProvider.of<AppointmentBloc>(context);
     final formattedDate =
-    DateFormat('yyyy-MM-ddTHH:mm:ss').format(selectedDate);
+        DateFormat('yyyy-MM-ddTHH:mm:ss').format(selectedDate);
     request = SaveAppointmentRequest(
       appointmentDate: "${formattedDate}Z",
       duration: selectedEndDate.difference(selectedDate),
@@ -112,7 +113,7 @@ class _MobileScheduleState extends State<MobileSchedule> {
       getPatientById(element.patientId).then((patient) {
         getDoctorById(element.doctorId).then((doctor) {
           final existingAppointmentIndex = mdataSource.appointments.indexWhere(
-                (appointment) => appointment.appointmentId == element.id,
+            (appointment) => appointment.appointmentId == element.id,
           );
 
           if (existingAppointmentIndex == -1) {
@@ -181,23 +182,14 @@ class _MobileScheduleState extends State<MobileSchedule> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Профіль'),
+        title: const Text('Розклад'),
         centerTitle: true,
       ),
       drawer: const SideMenu(),
       body: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-        margin: const EdgeInsets.only(bottom: 20, left: 20, right: 20, top: 20),
+        width: MediaQuery.of(context).size.width,
         decoration: const BoxDecoration(
-          color: Color.fromARGB(255, 241, 240, 240),
-          borderRadius: BorderRadius.all(Radius.circular(10)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black12,
-              blurRadius: 5,
-              offset: Offset(0, 5),
-            ),
-          ],
+          color: Colors.white,
         ),
         child: BlocBuilder<AppointmentBloc, AppointmentState>(
           bloc: appointmentBloc,
@@ -212,9 +204,9 @@ class _MobileScheduleState extends State<MobileSchedule> {
                   if (state is AppointmentErrorState) {
                     final error = state.errorMessage;
                     MotionToast.error(
-                        title: const Text("Щось пішло не так"),
-                        description: const Text(
-                            "Не вдалося додати запис. Спробуйте ще раз"))
+                            title: const Text("Щось пішло не так"),
+                            description: const Text(
+                                "Не вдалося додати запис. Спробуйте ще раз"))
                         .show(context);
                     print(error);
                     mdataSource.appointments.removeLast();
@@ -236,8 +228,8 @@ class _MobileScheduleState extends State<MobileSchedule> {
                     );
                   } else if (state is AppointmentDeletedState) {
                     MotionToast.delete(
-                        description:
-                        const Text("Пацієнта успішно видалено"))
+                            description:
+                                const Text("Пацієнта успішно видалено"))
                         .show(context);
                   }
                 },
@@ -257,7 +249,7 @@ class _MobileScheduleState extends State<MobileSchedule> {
                   onTap: (CalendarTapDetails details) {
                     if (details.targetElement == CalendarElement.appointment) {
                       final CustomAppointment appointmentDetails =
-                      details.appointments![0] as CustomAppointment;
+                          details.appointments![0] as CustomAppointment;
                       buildShowAppointmentDetails(context, appointmentDetails);
                     } else if (details.targetElement ==
                         CalendarElement.calendarCell) {
@@ -267,7 +259,7 @@ class _MobileScheduleState extends State<MobileSchedule> {
                       selectedEndDate =
                           selectedDate.add(const Duration(hours: 1));
                       Duration duration =
-                      selectedEndDate.difference(selectedDate);
+                          selectedEndDate.difference(selectedDate);
                       buildCreateAppointmentDialog(context, duration);
                     }
                   },
@@ -293,7 +285,7 @@ class _MobileScheduleState extends State<MobileSchedule> {
                 onTap: (CalendarTapDetails details) {
                   if (details.targetElement == CalendarElement.appointment) {
                     final CustomAppointment appointmentDetails =
-                    details.appointments![0] as CustomAppointment;
+                        details.appointments![0] as CustomAppointment;
                     buildShowAppointmentDetails(context, appointmentDetails);
                   } else if (details.targetElement ==
                       CalendarElement.calendarCell) {
@@ -303,7 +295,7 @@ class _MobileScheduleState extends State<MobileSchedule> {
                     selectedEndDate =
                         selectedDate.add(const Duration(hours: 1));
                     Duration duration =
-                    selectedEndDate.difference(selectedDate);
+                        selectedEndDate.difference(selectedDate);
                     buildCreateAppointmentDialog(context, duration);
                   }
                 },
@@ -317,312 +309,326 @@ class _MobileScheduleState extends State<MobileSchedule> {
     );
   }
 
-  Future<dynamic> buildCreateAppointmentDialog(BuildContext context,
-      Duration duration) {
+  Future<dynamic> buildCreateAppointmentDialog(
+      BuildContext context, Duration duration) {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
           return StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
-                return AlertDialog(
-                  title: SizedBox(
-                    width: 600,
-                    child: Row(
-                      children: [
-                        const Row(children: [
-                          Icon(Ionicons.bag_add),
-                          SizedBox(width: 10),
-                          Text('Візит пацієнта'),
-                        ]),
+            return AlertDialog(
+              title: SizedBox(
+                width: 600,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Row(children: [
+                      Icon(Ionicons.bag_add),
+                      SizedBox(width: 10),
+                      Text('Візит пацієнта'),
+                    ]),
+                    DropdownButton<String>(
+                      value: status,
+                      dropdownColor: Colors.grey[200],
+                      icon: const Icon(
+                        Ionicons.chevron_down_outline,
+                        color: Colors.black,
+                      ),
+                      underline: Container(
+                        height: 0,
+                        color: Colors.black,
+                      ),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          status = newValue!;
+                        });
+                      },
+                      items: <String>[
+                        'Заплановано',
+                        'Підтверджено',
+                        'Виконано',
+                        'Пропущено',
+                        'Перенесено',
+                        'Не дозвонились',
+                        'Запізнюється',
+                        'В клініці',
+                        'В кабінеті',
+                        'Скасовано'
+                      ].map<DropdownMenuItem<String>>((String value) {
+                        final Map<String, Color> itemColors = {
+                          'Заплановано': Colors.blue,
+                          'Підтверджено': Colors.green,
+                          'Виконано': Colors.orange,
+                          'Пропущено': Colors.red,
+                          'Перенесено': Color.fromARGB(255, 240, 218, 21),
+                          'Не дозвонились': Colors.purple,
+                          'Запізнюється': Colors.teal,
+                          'В клініці': Colors.cyan,
+                          'В кабінеті': Colors.brown,
+                          'Скасовано': Colors.grey,
+                        };
 
-                        DropdownButton<String>(
-                          value: status,
-                          dropdownColor: Colors.grey[200],
-                          icon: const Icon(
-                            Ionicons.chevron_down_outline,
-                            color: Colors.black,
-                          ),
-                          underline: Container(
-                            height: 0,
-                            color: Colors.black,
-                          ),
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              status = newValue!;
-                            });
-                          },
-                          items: <String>[
-                            'Заплановано',
-                            'Підтверджено',
-                            'Виконано',
-                            'Пропущено',
-                            'Перенесено',
-                            'Не дозвонились',
-                            'Запізнюється',
-                            'В клініці',
-                            'В кабінеті',
-                            'Скасовано'
-                          ].map<DropdownMenuItem<String>>((String value) {
-                            final Map<String, Color> itemColors = {
-                              'Заплановано': Colors.blue,
-                              'Підтверджено': Colors.green,
-                              'Виконано': Colors.orange,
-                              'Пропущено': Colors.red,
-                              'Перенесено': Color.fromARGB(255, 240, 218, 21),
-                              'Не дозвонились': Colors.purple,
-                              'Запізнюється': Colors.teal,
-                              'В клініці': Colors.cyan,
-                              'В кабінеті': Colors.brown,
-                              'Скасовано': Colors.grey,
-                            };
-
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Container(
-                                padding: const EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
-                                  color: itemColors[value],
-                                ),
-                                child: Text(
-                                  value,
-                                  style: const TextStyle(
-                                    color: Colors.white, // Set the text color
-                                  ),
-                                ),
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              color: itemColors[value],
+                            ),
+                            child: Text(
+                              value,
+                              style: const TextStyle(
+                                color: Colors.white, // Set the text color
                               ),
-                            );
-                          }).toList(),
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                ),
+              ),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                        'Дата: ${selectedDate.day}.${selectedDate.month}.${selectedDate.year}'),
+                    Text('Час: ${selectedDate.hour.toString().padLeft(2, '0')}:'
+                        '${selectedDate.minute.toString().padLeft(2, '0')} '
+                        '- ${selectedEndDate.hour.toString().padLeft(2, '0')}:'
+                        '${selectedEndDate.minute.toString().padLeft(2, '0')}'),
+                    DropdownButtonFormField<Patient>(
+                      selectedItemBuilder: (BuildContext context) {
+                        return patients.map<Widget>((Patient patient) {
+                          return Row(
+                            children: [
+                              Text(patient.name),
+                              Text(
+                                " ${patient.dateOfBirth.day}.${patient.dateOfBirth.month}.${patient.dateOfBirth.year}",
+                                style: const TextStyle(fontSize: 10),
+                              ),
+                            ],
+                          );
+                        }).toList();
+                      },
+                      decoration: const InputDecoration(labelText: 'Пацієнт'),
+                      value: selectedPatient,
+                      onChanged: (Patient? newValue) {
+                        setState(() {
+                          selectedPatient = newValue;
+                        });
+                      },
+                      dropdownColor: AppColors.mainBlueColor,
+                      items: patients.map<DropdownMenuItem<Patient>>(
+                        (Patient patient) {
+                          return DropdownMenuItem<Patient>(
+                            value: patient,
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(patient.name),
+                                  const SizedBox(width: 10),
+                                  Text(
+                                    " ${patient.dateOfBirth.day} ${patient.dateOfBirth.month}.${patient.dateOfBirth.year}",
+                                    style: const TextStyle(fontSize: 12),
+                                  ),
+                                ]),
+                          );
+                        },
+                      ).toList(),
+                    ),
+                    DropdownButtonFormField<Doctor>(
+                      decoration: const InputDecoration(labelText: 'Лікар'),
+                      value: selectedDoctor,
+                      onChanged: (Doctor? newValue) {
+                        setState(() {
+                          selectedDoctor = newValue;
+                        });
+                      },
+                      dropdownColor: AppColors.mainBlueColor,
+                      items: doctors.map<DropdownMenuItem<Doctor>>(
+                        (Doctor doctor) {
+                          return DropdownMenuItem<Doctor>(
+                            value: doctor,
+                            child: Row(children: [
+                              Text(doctor.name),
+                              const SizedBox(width: 10),
+                              Text(
+                                " ${doctor.specialization}",
+                                style: const TextStyle(fontSize: 12),
+                              ),
+                            ]),
+                          );
+                        },
+                      ).toList(),
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        const Text('з'),
+                        const SizedBox(width: 10),
+                        Column(
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  selectedDate = selectedDate
+                                      .add(const Duration(hours: 1));
+                                  duration =
+                                      selectedEndDate.difference(selectedDate);
+                                });
+                              },
+                              icon: const Icon(Ionicons.arrow_up_outline),
+                            ),
+                            Text('${selectedDate.hour}'),
+                            IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  selectedDate = selectedDate
+                                      .subtract(const Duration(hours: 1));
+                                  duration =
+                                      selectedEndDate.difference(selectedDate);
+                                });
+                              },
+                              icon: const Icon(Ionicons.arrow_down_outline),
+                            ),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  selectedDate = selectedDate
+                                      .add(const Duration(minutes: 1));
+                                  duration =
+                                      selectedEndDate.difference(selectedDate);
+                                });
+                              },
+                              icon: const Icon(Ionicons.arrow_up_outline),
+                            ),
+                            Text('${selectedDate.minute}'),
+                            IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  selectedDate = selectedDate
+                                      .subtract(const Duration(minutes: 1));
+                                  duration =
+                                      selectedEndDate.difference(selectedDate);
+                                });
+                              },
+                              icon: const Icon(Ionicons.arrow_down_outline),
+                            ),
+                          ],
+                        ),
+                        const Text('до'),
+                        Column(
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  selectedEndDate = selectedEndDate
+                                      .add(const Duration(hours: 1));
+                                  duration =
+                                      selectedEndDate.difference(selectedDate);
+                                });
+                              },
+                              icon: const Icon(Ionicons.arrow_up_outline),
+                            ),
+                            Text('${selectedEndDate.hour}'),
+                            IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  selectedEndDate = selectedEndDate
+                                      .subtract(const Duration(hours: 1));
+                                  duration =
+                                      selectedEndDate.difference(selectedDate);
+                                });
+                              },
+                              icon: const Icon(Ionicons.arrow_down_outline),
+                            ),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  selectedEndDate = selectedEndDate
+                                      .add(const Duration(minutes: 1));
+                                  duration =
+                                      selectedEndDate.difference(selectedDate);
+                                });
+                              },
+                              icon: const Icon(Ionicons.arrow_up_outline),
+                            ),
+                            Text('${selectedEndDate.minute}'),
+                            IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  selectedEndDate = selectedEndDate
+                                      .subtract(const Duration(minutes: 1));
+                                  duration =
+                                      selectedEndDate.difference(selectedDate);
+                                });
+                              },
+                              icon: const Icon(Ionicons.arrow_down_outline),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                  ),
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                          'Дата: ${selectedDate.day}.${selectedDate
-                              .month}.${selectedDate.year}'),
-                      Text(
-                          'Час: ${selectedDate.hour}:${selectedDate
-                              .minute} - ${selectedEndDate
-                              .hour}:${selectedEndDate.minute}'),
-                      DropdownButtonFormField<Patient>(
-                        decoration: const InputDecoration(labelText: 'Пацієнт'),
-                        value: selectedPatient,
-                        onChanged: (Patient? newValue) {
-                          setState(() {
-                            selectedPatient = newValue;
-                          });
-                        },
-                        dropdownColor: AppColors.mainBlueColor,
-                        items: patients.map<DropdownMenuItem<Patient>>(
-                              (Patient patient) {
-                            return DropdownMenuItem<Patient>(
-                              value: patient,
-                              child: Row(children: [
-                                Text(patient.name),
-                                const SizedBox(width: 10),
-                                Text(
-                                  " ${patient.dateOfBirth.day} ${patient
-                                      .dateOfBirth.month}.${patient.dateOfBirth
-                                      .year}",
-                                  style: const TextStyle(fontSize: 12),
-                                ),
-                              ]),
-                            );
-                          },
-                        ).toList(),
-                      ),
-                      DropdownButtonFormField<Doctor>(
-                        decoration: const InputDecoration(labelText: 'Лікар'),
-                        value: selectedDoctor,
-                        onChanged: (Doctor? newValue) {
-                          setState(() {
-                            selectedDoctor = newValue;
-                          });
-                        },
-                        dropdownColor: AppColors.mainBlueColor,
-                        items: doctors.map<DropdownMenuItem<Doctor>>(
-                              (Doctor doctor) {
-                            return DropdownMenuItem<Doctor>(
-                              value: doctor,
-                              child: Row(children: [
-                                Text(doctor.name),
-                                const SizedBox(width: 10),
-                                Text(
-                                  " ${doctor.specialization}",
-                                  style: const TextStyle(fontSize: 12),
-                                ),
-                              ]),
-                            );
-                          },
-                        ).toList(),
-                      ),
-                      const SizedBox(height: 10),
-                      Row(
-                        children: [
-                          const Text('Час: '),
-                          const SizedBox(width: 10),
-                          const Text('з'),
-                          const SizedBox(width: 10),
-                          Column(
-                            children: [
-                              IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    selectedDate =
-                                        selectedDate.add(
-                                            const Duration(hours: 1));
-                                    duration =
-                                        selectedEndDate.difference(
-                                            selectedDate);
-                                  });
-                                },
-                                icon: const Icon(Ionicons.arrow_up_outline),
-                              ),
-                              Text('${selectedDate.hour}'),
-                              IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    selectedDate = selectedDate
-                                        .subtract(const Duration(hours: 1));
-                                    duration =
-                                        selectedEndDate.difference(
-                                            selectedDate);
-                                  });
-                                },
-                                icon: const Icon(Ionicons.arrow_down_outline),
-                              ),
-                            ],
-                          ),
-                          Column(
-                            children: [
-                              IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    selectedDate = selectedDate
-                                        .add(const Duration(minutes: 1));
-                                    duration =
-                                        selectedEndDate.difference(
-                                            selectedDate);
-                                  });
-                                },
-                                icon: const Icon(Ionicons.arrow_up_outline),
-                              ),
-                              Text('${selectedDate.minute}'),
-                              IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    selectedDate = selectedDate
-                                        .subtract(const Duration(minutes: 1));
-                                    duration =
-                                        selectedEndDate.difference(
-                                            selectedDate);
-                                  });
-                                },
-                                icon: const Icon(Ionicons.arrow_down_outline),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(width: 10),
-                          const Text('до'),
-                          const SizedBox(width: 10),
-                          Column(
-                            children: [
-                              IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    selectedEndDate = selectedEndDate
-                                        .add(const Duration(hours: 1));
-                                    duration =
-                                        selectedEndDate.difference(
-                                            selectedDate);
-                                  });
-                                },
-                                icon: const Icon(Ionicons.arrow_up_outline),
-                              ),
-                              Text('${selectedEndDate.hour}'),
-                              IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    selectedEndDate = selectedEndDate
-                                        .subtract(const Duration(hours: 1));
-                                    duration =
-                                        selectedEndDate.difference(
-                                            selectedDate);
-                                  });
-                                },
-                                icon: const Icon(Ionicons.arrow_down_outline),
-                              ),
-                            ],
-                          ),
-                          Column(
-                            children: [
-                              IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    selectedEndDate = selectedEndDate
-                                        .add(const Duration(minutes: 1));
-                                    duration =
-                                        selectedEndDate.difference(
-                                            selectedDate);
-                                  });
-                                },
-                                icon: const Icon(Ionicons.arrow_up_outline),
-                              ),
-                              Text('${selectedEndDate.minute}'),
-                              IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    selectedEndDate = selectedEndDate
-                                        .subtract(const Duration(minutes: 1));
-                                    duration =
-                                        selectedEndDate.difference(
-                                            selectedDate);
-                                  });
-                                },
-                                icon: const Icon(Ionicons.arrow_down_outline),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(width: 10),
-                          Text(
-                              '${duration.inHours} год. ${duration.inMinutes -
-                                  duration.inHours * 60} хв.'),
-                        ],
-                      ),
-                      TextField(
-                        controller: commentController,
-                        decoration: const InputDecoration(
-                            labelText: 'Коментар'),
-                      ),
-                    ],
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text('Відміна'),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        _saveAppointment(context);
-
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text('Зберегти'),
+                    TextField(
+                      controller: commentController,
+                      decoration: const InputDecoration(labelText: 'Коментар'),
                     ),
                   ],
-                );
-              });
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    setState(() {
+                      selectedPatient = null;
+                      selectedDoctor = null;
+                      selectedDate = DateTime.now();
+                      selectedEndDate =
+                          DateTime.now().add(const Duration(hours: 1));
+                      commentController.clear();
+                    });
+                  },
+                  child: const Text('Відміна'),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.mainBlueColor,
+                  ),
+                  onPressed: () {
+                    _saveAppointment(context);
+                    Navigator.of(context).pop();
+                    setState(() {
+                      selectedPatient = null;
+                      selectedDoctor = null;
+                      selectedDate = DateTime.now();
+                      selectedEndDate =
+                          DateTime.now().add(const Duration(hours: 1));
+                      commentController.clear();
+                    });
+                  },
+                  child: const Text('Зберегти'),
+                ),
+              ],
+            );
+          });
         });
   }
 
-  Future<dynamic> buildShowAppointmentDetails(BuildContext context,
-      CustomAppointment appointmentDetails) {
+  Future<dynamic> buildShowAppointmentDetails(
+      BuildContext context, CustomAppointment appointmentDetails) {
     setState(() {
       status = appointmentDetails.subject;
     });
@@ -631,129 +637,127 @@ class _MobileScheduleState extends State<MobileSchedule> {
         builder: (BuildContext context) {
           return StatefulBuilder(
               builder: (BuildContext context, StateSetter setState) {
-                return AlertDialog(
-                  title: SizedBox(
-                    width: 600,
-                    child: Row(
-                      children: [
-                        const Row(children: [
-                          Icon(Ionicons.calendar_outline),
-                          SizedBox(width: 10),
-                          Text('Візит пацієнта'),
-                        ]),
-                        const Spacer(),
-                        DropdownButton<String>(
-                          value: status,
-                          dropdownColor: Colors.grey[200],
-                          icon: const Icon(
-                            Ionicons.chevron_down_outline,
-                            color: Colors.black,
-                          ),
-                          underline: Container(
-                            height: 0,
-                            color: Colors.black,
-                          ),
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              status = newValue!;
-                            });
-                          },
-                          items: <String>[
-                            'Заплановано',
-                            'Підтверджено',
-                            'Виконано',
-                            'Пропущено',
-                            'Перенесено',
-                            'Не дозвонились',
-                            'Запізнюється',
-                            'В клініці',
-                            'В кабінеті',
-                            'Скасовано',
-                            'Новий',
-                          ].map<DropdownMenuItem<String>>((String value) {
-                            // Define a map with custom text and background colors for each item
-                            final Map<String, Color> itemColors = {
-                              'Заплановано': Colors.blue,
-                              'Підтверджено': Colors.green,
-                              'Виконано': Colors.orange,
-                              'Пропущено': Colors.red,
-                              'Перенесено': const Color.fromARGB(
-                                  255, 172, 160, 55),
-                              'Не дозвонились': Colors.purple,
-                              'Запізнюється': Colors.teal,
-                              'В клініці': Colors.cyan,
-                              'В кабінеті': Colors.brown,
-                              'Скасовано': Colors.grey,
-                              'Новий': Colors.blue,
-                            };
+            return AlertDialog(
+              title: SizedBox(
+                width: 600,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Row(children: [
+                      Icon(Ionicons.calendar_outline),
+                      SizedBox(width: 10),
+                      Text('Візит пацієнта'),
+                    ]),
+                    DropdownButton<String>(
+                      value: status,
+                      dropdownColor: Colors.grey[200],
+                      icon: const Icon(
+                        Ionicons.chevron_down_outline,
+                        color: Colors.black,
+                      ),
+                      underline: Container(
+                        height: 0,
+                        color: Colors.black,
+                      ),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          status = newValue!;
+                        });
+                      },
+                      items: <String>[
+                        'Заплановано',
+                        'Підтверджено',
+                        'Виконано',
+                        'Пропущено',
+                        'Перенесено',
+                        'Не дозвонились',
+                        'Запізнюється',
+                        'В клініці',
+                        'В кабінеті',
+                        'Скасовано',
+                        'Новий',
+                      ].map<DropdownMenuItem<String>>((String value) {
+                        // Define a map with custom text and background colors for each item
+                        final Map<String, Color> itemColors = {
+                          'Заплановано': Colors.blue,
+                          'Підтверджено': Colors.green,
+                          'Виконано': Colors.orange,
+                          'Пропущено': Colors.red,
+                          'Перенесено': const Color.fromARGB(255, 172, 160, 55),
+                          'Не дозвонились': Colors.purple,
+                          'Запізнюється': Colors.teal,
+                          'В клініці': Colors.cyan,
+                          'В кабінеті': Colors.brown,
+                          'Скасовано': Colors.grey,
+                          'Новий': Colors.blue,
+                        };
 
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Container(
-                                padding: const EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
-                                  color: itemColors[value],
-                                ),
-                                child: Text(
-                                  value,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                  ),
-                                ),
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              color: itemColors[value],
+                            ),
+                            child: Text(
+                              value,
+                              style: const TextStyle(
+                                color: Colors.white,
                               ),
-                            );
-                          }).toList(),
-                        ),
-                      ],
-                    ),
-                  ),
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(appointmentDetails.appointmentId.toString()),
-                      Text(appointmentDetails.patientName,
-                          style: const TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold)),
-                      const Text(
-                          '+380503368838', style: TextStyle(fontSize: 16)),
-                      const SizedBox(height: 10),
-                      Text(
-                          '${appointmentDetails.startTime
-                              .day}.${appointmentDetails.startTime
-                              .month}.${appointmentDetails.startTime
-                              .year} ${appointmentDetails.startTime
-                              .hour}:${appointmentDetails.startTime
-                              .minute} - ${appointmentDetails.endTime
-                              .hour}:${appointmentDetails.endTime.minute}'),
-                      const SizedBox(height: 10),
-                      Text('Лікар: ${appointmentDetails.doctorName}',
-                          style: const TextStyle(fontSize: 16)),
-                      Text('Коментар: ${appointmentDetails.comment}',
-                          style: const TextStyle(fontSize: 16)),
-                    ],
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text('Закрити'),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        mdataSource.removeAppointment(appointmentDetails);
-                        appointmentBloc.add(DeleteAppointmentEvent(
-                            appointmentDetails.appointmentId));
-
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text('Видалити'),
+                            ),
+                          ),
+                        );
+                      }).toList(),
                     ),
                   ],
-                );
-              });
+                ),
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(appointmentDetails.patientName,
+                      style: const TextStyle(
+                          fontSize: 20, fontWeight: FontWeight.bold)),
+                  const Text('+380503368838', style: TextStyle(fontSize: 16)),
+                  const SizedBox(height: 10),
+                  Text(
+                      '${appointmentDetails.startTime.day}.${appointmentDetails.startTime.month}.${appointmentDetails.startTime.year} '
+                      '${appointmentDetails.startTime.hour.toString().padLeft(2, '0')}:'
+                      '${appointmentDetails.startTime.minute.toString().padLeft(2, '0')} - '
+                      '${appointmentDetails.endTime.hour.toString().padLeft(2, '0')}:'
+                      '${appointmentDetails.endTime.minute.toString().padLeft(2, '0')}'),
+                  const SizedBox(height: 10),
+                  Text('Лікар: ${appointmentDetails.doctorName}',
+                      style: const TextStyle(fontSize: 16)),
+                  Text('Коментар: ${appointmentDetails.comment}',
+                      style: const TextStyle(fontSize: 16)),
+                ],
+              ),
+              actions: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                  ),
+                  onPressed: () {
+                    mdataSource.removeAppointment(appointmentDetails);
+                    appointmentBloc.add(DeleteAppointmentEvent(
+                        appointmentDetails.appointmentId));
+
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Видалити'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Закрити'),
+                ),
+              ],
+            );
+          });
         });
   }
 }

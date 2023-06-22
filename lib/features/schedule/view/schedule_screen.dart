@@ -21,8 +21,14 @@ class ScheduleScreen extends StatelessWidget {
           }
         },
         child: ResponsiveLayout(
-          mobileScaffold: const MobileSchedule(),
-          tabletScaffold: const TabletSchedule(),
+          mobileScaffold: BlocProvider<AppointmentBloc>.value(
+            value: BlocProvider.of<AppointmentBloc>(context),
+            child: const MobileSchedule(),
+          ),
+          tabletScaffold: BlocProvider<AppointmentBloc>.value(
+            value: BlocProvider.of<AppointmentBloc>(context),
+            child: const TabletSchedule(),
+          ),
           desktopScaffold: BlocProvider<AppointmentBloc>.value(
             value: BlocProvider.of<AppointmentBloc>(context),
             child: const DesktopSchedule(),

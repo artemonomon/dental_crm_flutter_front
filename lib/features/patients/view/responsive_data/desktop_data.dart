@@ -683,7 +683,9 @@ class _DesktopDataScreenState extends State<DesktopDataScreen>
                 color: Colors.white,
               ),
               onPressed: () {
-                // Implement delete image logic
+                setState(() {
+                  _pickedImagePath = null;
+                });
               },
             ),
           ),

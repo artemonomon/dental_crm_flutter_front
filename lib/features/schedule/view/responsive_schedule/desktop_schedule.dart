@@ -60,7 +60,6 @@ class _DesktopScheduleState extends State<DesktopSchedule> {
   PatientRepository patientRepository = PatientRepository();
   DoctorRepository doctorRepository = DoctorRepository();
 
-
   final TextEditingController patientNameController = TextEditingController();
   final TextEditingController doctorNameController = TextEditingController();
   final TextEditingController commentController = TextEditingController();
@@ -113,7 +112,7 @@ class _DesktopScheduleState extends State<DesktopSchedule> {
       getPatientById(element.patientId).then((patient) {
         getDoctorById(element.doctorId).then((doctor) {
           final existingAppointmentIndex = dataSource.appointments.indexWhere(
-                (appointment) => appointment.appointmentId == element.id,
+            (appointment) => appointment.appointmentId == element.id,
           );
 
           if (existingAppointmentIndex == -1) {
@@ -133,7 +132,6 @@ class _DesktopScheduleState extends State<DesktopSchedule> {
     }
   }
 
-
   Future<void> loadPatients() async {
     try {
       final patientsData = await patientRepository.getPatients();
@@ -146,7 +144,6 @@ class _DesktopScheduleState extends State<DesktopSchedule> {
       print('Error loading patients: $error');
     }
   }
-
 
   Future<void> loadDoctors() async {
     try {
@@ -178,7 +175,6 @@ class _DesktopScheduleState extends State<DesktopSchedule> {
       throw Exception('Failed to get doctor by id: $error');
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -414,8 +410,10 @@ class _DesktopScheduleState extends State<DesktopSchedule> {
                 children: [
                   Text(
                       'Дата: ${selectedDate.day}.${selectedDate.month}.${selectedDate.year}'),
-                  Text(
-                      'Час: ${selectedDate.hour}:${selectedDate.minute} - ${selectedEndDate.hour}:${selectedEndDate.minute}'),
+                  Text('Час: ${selectedDate.hour.toString().padLeft(2, '0')}:'
+                      '${selectedDate.minute.toString().padLeft(2, '0')} '
+                      '- ${selectedEndDate.hour.toString().padLeft(2, '0')}:'
+                      '${selectedEndDate.minute.toString().padLeft(2, '0')}'),
                   DropdownButtonFormField<Patient>(
                     decoration: const InputDecoration(labelText: 'Пацієнт'),
                     value: selectedPatient,
@@ -451,7 +449,7 @@ class _DesktopScheduleState extends State<DesktopSchedule> {
                     },
                     dropdownColor: AppColors.mainBlueColor,
                     items: doctors.map<DropdownMenuItem<Doctor>>(
-                          (Doctor doctor) {
+                      (Doctor doctor) {
                         return DropdownMenuItem<Doctor>(
                           value: doctor,
                           child: Row(children: [
@@ -599,14 +597,33 @@ class _DesktopScheduleState extends State<DesktopSchedule> {
                 TextButton(
                   onPressed: () {
                     Navigator.of(context).pop();
+                    setState(() {
+                      selectedPatient = null;
+                      selectedDoctor = null;
+                      selectedDate = DateTime.now();
+                      selectedEndDate =
+                          DateTime.now().add(const Duration(hours: 1));
+                      commentController.clear();
+                    });
                   },
                   child: const Text('Відміна'),
                 ),
-                TextButton(
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.mainBlueColor,
+                  ),
                   onPressed: () {
                     _saveAppointment(context);
 
                     Navigator.of(context).pop();
+                    setState(() {
+                      selectedPatient = null;
+                      selectedDoctor = null;
+                      selectedDate = DateTime.now();
+                      selectedEndDate =
+                          DateTime.now().add(const Duration(hours: 1));
+                      commentController.clear();
+                    });
                   },
                   child: const Text('Зберегти'),
                 ),
@@ -713,7 +730,11 @@ class _DesktopScheduleState extends State<DesktopSchedule> {
                   const Text('+380503368838', style: TextStyle(fontSize: 16)),
                   const SizedBox(height: 10),
                   Text(
-                      '${appointmentDetails.startTime.day}.${appointmentDetails.startTime.month}.${appointmentDetails.startTime.year} ${appointmentDetails.startTime.hour}:${appointmentDetails.startTime.minute} - ${appointmentDetails.endTime.hour}:${appointmentDetails.endTime.minute}'),
+                      '${appointmentDetails.startTime.day}.${appointmentDetails.startTime.month}.${appointmentDetails.startTime.year} '
+                      '${appointmentDetails.startTime.hour.toString().padLeft(2, '0')}:'
+                      '${appointmentDetails.startTime.minute.toString().padLeft(2, '0')} - '
+                      '${appointmentDetails.endTime.hour.toString().padLeft(2, '0')}:'
+                      '${appointmentDetails.endTime.minute.toString().padLeft(2, '0')}'),
                   const SizedBox(height: 10),
                   Text('Лікар: ${appointmentDetails.doctorName}',
                       style: const TextStyle(fontSize: 16)),
@@ -722,13 +743,10 @@ class _DesktopScheduleState extends State<DesktopSchedule> {
                 ],
               ),
               actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('Закрити'),
-                ),
-                TextButton(
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                  ),
                   onPressed: () {
                     dataSource.removeAppointment(appointmentDetails);
                     appointmentBloc.add(DeleteAppointmentEvent(
@@ -737,6 +755,12 @@ class _DesktopScheduleState extends State<DesktopSchedule> {
                     Navigator.of(context).pop();
                   },
                   child: const Text('Видалити'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Закрити'),
                 ),
               ],
             );
