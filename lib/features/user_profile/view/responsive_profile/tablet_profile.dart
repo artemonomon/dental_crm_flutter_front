@@ -31,6 +31,8 @@ class _TabletProfileState extends State<TabletProfile> {
   String _email = ' ';
   final Uri _url = Uri.parse(
       'https://docs.google.com/uc?export=download&id=1tswypAbxjw8ke56ESewlEuKAuqUUiu3t');
+  final Uri _urlWind = Uri.parse(
+      'https://docs.google.com/uc?export=download&id=1RCoubhN8xyEnCc22I2KJzreMVgSdWMfK');
 
   @override
   void initState() {
@@ -52,6 +54,12 @@ class _TabletProfileState extends State<TabletProfile> {
   Future<void> downloadAndroidInstaller() async {
     if (!await launchUrl(_url)) {
       throw Exception('Could not launch $_url');
+    }
+  }
+
+  Future<void> downloadWindowsInstaller() async {
+    if (!await launchUrl(_urlWind)) {
+      throw Exception('Could not launch $_urlWind');
     }
   }
 

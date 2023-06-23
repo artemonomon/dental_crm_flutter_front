@@ -1,7 +1,5 @@
 import 'package:dental_crm_flutter_front/features/user_profile/bloc/user_bloc.dart';
 import 'package:dental_crm_flutter_front/features/user_profile/widgets/form_button.dart';
-import 'package:dental_crm_flutter_front/features/user_profile/widgets/form_pass_field.dart';
-import 'package:dental_crm_flutter_front/features/user_profile/widgets/form_text_field.dart';
 import 'package:dental_crm_flutter_front/repositories/user/user_repository.dart';
 import 'package:dental_crm_flutter_front/utils/utils.dart';
 import 'package:dental_crm_flutter_front/widgets/widgets.dart';
@@ -24,9 +22,13 @@ class _MobileProfileState extends State<MobileProfile> {
   final TextEditingController _repPasswordController = TextEditingController();
   final Uri _url = Uri.parse(
       'https://docs.google.com/uc?export=download&id=1tswypAbxjw8ke56ESewlEuKAuqUUiu3t');
-  bool _isPasswordVisible = false;
-  bool _isNewPasswordVisible = false;
-  bool _isRepeatPasswordVisible = false;
+
+  final Uri _urlWind = Uri.parse(
+      'https://docs.google.com/uc?export=download&id=1RCoubhN8xyEnCc22I2KJzreMVgSdWMfK');
+
+  // bool _isPasswordVisible = false;
+  // bool _isNewPasswordVisible = false;
+  // bool _isRepeatPasswordVisible = false;
   late UserBloc _userBloc;
   String _name = ' ';
   String _email = ' ';
@@ -51,6 +53,12 @@ class _MobileProfileState extends State<MobileProfile> {
   Future<void> downloadAndroidInstaller() async {
     if (!await launchUrl(_url)) {
       throw Exception('Could not launch $_url');
+    }
+  }
+
+  Future<void> downloadWindowsInstaller() async {
+    if (!await launchUrl(_urlWind)) {
+      throw Exception('Could not launch $_urlWind');
     }
   }
 
@@ -245,7 +253,9 @@ class _MobileProfileState extends State<MobileProfile> {
                           verticalEI: 10,
                           text: "Windows версія",
                           color: AppColors.mainBlueColor,
-                          onTap: () {},
+                          onTap: () {
+                            downloadWindowsInstaller();
+                          },
                         ),
                       ],
                     ),

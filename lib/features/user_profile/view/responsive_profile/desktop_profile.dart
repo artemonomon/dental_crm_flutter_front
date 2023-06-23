@@ -1,6 +1,5 @@
 import 'package:dental_crm_flutter_front/features/user_profile/bloc/user_bloc.dart';
 import 'package:dental_crm_flutter_front/features/user_profile/widgets/form_button.dart';
-import 'package:dental_crm_flutter_front/features/user_profile/widgets/form_text_field.dart';
 import 'package:dental_crm_flutter_front/repositories/user/user_repository.dart';
 import 'package:dental_crm_flutter_front/utils/utils.dart';
 import 'package:dental_crm_flutter_front/widgets/widgets.dart';
@@ -27,6 +26,9 @@ class _DesktopProfileState extends State<DesktopProfile> {
   final Uri _url = Uri.parse(
       'https://docs.google.com/uc?export=download&id=1tswypAbxjw8ke56ESewlEuKAuqUUiu3t');
 
+  final Uri _urlWind = Uri.parse(
+      'https://docs.google.com/uc?export=download&id=1RCoubhN8xyEnCc22I2KJzreMVgSdWMfK');
+
   @override
   void initState() {
     super.initState();
@@ -47,6 +49,12 @@ class _DesktopProfileState extends State<DesktopProfile> {
   Future<void> downloadAndroidInstaller() async {
     if (!await launchUrl(_url)) {
       throw Exception('Could not launch $_url');
+    }
+  }
+
+  Future<void> downloadWindowsInstaller() async {
+    if (!await launchUrl(_urlWind)) {
+      throw Exception('Could not launch $_urlWind');
     }
   }
 
@@ -218,7 +226,9 @@ class _DesktopProfileState extends State<DesktopProfile> {
                       FormButton(
                         text: "Завантаження десктоп версії (Windows)",
                         color: AppColors.mainBlueColor,
-                        onTap: () {},
+                        onTap: () {
+                          downloadWindowsInstaller();
+                        },
                       ),
                     ],
                   ),

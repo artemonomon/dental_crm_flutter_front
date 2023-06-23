@@ -1,5 +1,6 @@
 import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:dental_crm_flutter_front/features/patients/widgets/widgets.dart';
+import 'package:dental_crm_flutter_front/repositories/formula/models/tooth.dart';
 import 'package:dental_crm_flutter_front/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
@@ -23,10 +24,11 @@ class _DesktopFormulaState extends State<DesktopFormula> {
   final TextEditingController toothEndoController = TextEditingController();
   final TextEditingController toothConstructionsController =
       TextEditingController();
-  List<Map<String, String>>? toothDamage = [];
+  String toothDamage = "";
   List<Map<String, String>>? toothParodont = [];
   List<Map<String, String>>? toothEndo = [];
   List<Map<String, String>>? toothConstructions = [];
+  Tooth? selectedToothData;
 
   List<ToothData> teethData = [
     const ToothData(number: 18, imagePath: 'assets/teeth/18.png'),
@@ -363,12 +365,8 @@ class _DesktopFormulaState extends State<DesktopFormula> {
                                           setState(() {
                                             if (toothDamageController
                                                 .text.isNotEmpty) {
-                                              toothDamage?.add({
-                                                'damage':
-                                                    toothDamageController.text,
-                                                'tooth':
-                                                    selectedTooth.toString(),
-                                              });
+                                              toothDamage =
+                                                  '$toothDamage${toothDamageController.text}, ';
                                             }
                                             toothDamageController.text = '';
                                           });
@@ -407,9 +405,6 @@ class _DesktopFormulaState extends State<DesktopFormula> {
                                           ],
                                           controller: toothParodontController,
                                           hintText: 'Виберіть пародонт',
-                                          selectedStyle: const TextStyle(
-                                            color: Colors.red,
-                                          ),
                                         ),
                                       ),
                                       IconButton(
@@ -418,11 +413,11 @@ class _DesktopFormulaState extends State<DesktopFormula> {
                                             if (toothParodontController
                                                 .text.isNotEmpty) {
                                               toothParodont?.add({
+                                                'tooth':
+                                                    selectedTooth.toString(),
                                                 'parodont':
                                                     toothParodontController
                                                         .text,
-                                                'tooth':
-                                                    selectedTooth.toString(),
                                               });
                                             }
                                             toothParodontController.text = '';
@@ -465,10 +460,10 @@ class _DesktopFormulaState extends State<DesktopFormula> {
                                                 .text.isNotEmpty) {
                                               toothEndo?.add(
                                                 {
-                                                  'endo':
-                                                      toothEndoController.text,
                                                   'tooth':
                                                       selectedTooth.toString(),
+                                                  'endo':
+                                                      toothEndoController.text,
                                                 },
                                               );
                                             }
@@ -519,11 +514,11 @@ class _DesktopFormulaState extends State<DesktopFormula> {
                                                 .text.isNotEmpty) {
                                               toothConstructions?.add(
                                                 {
+                                                  'tooth':
+                                                      selectedTooth.toString(),
                                                   'constructions':
                                                       toothConstructionsController
                                                           .text,
-                                                  'tooth':
-                                                      selectedTooth.toString(),
                                                 },
                                               );
                                             }
@@ -536,7 +531,7 @@ class _DesktopFormulaState extends State<DesktopFormula> {
                                     ],
                                   ),
                                   const SizedBox(height: 20),
-                                  const Column(
+                                  Column(
                                     children: [
                                       Row(
                                         children: [
@@ -545,6 +540,36 @@ class _DesktopFormulaState extends State<DesktopFormula> {
                                             color: AppColors.mainBlueColor,
                                             horizontalEI: 20,
                                             verticalEI: 10,
+                                            onTap: () {
+                                              selectedToothData = Tooth(
+                                                id: 0,
+                                                dentalFormulaId: 0,
+                                                type: toothTypeController.text,
+                                                toothNumber:
+                                                    selectedTooth.toString(),
+                                                toothName:
+                                                    selectedTooth.toString(),
+                                                damage: toothDamage,
+                                                parodont: "parodont",
+                                                endo: "endo",
+                                                constructions: "constructions",
+                                                createdDate: DateTime.now(),
+                                                updatedDate: DateTime.now(),
+                                              );
+                                              setState(() {
+                                                toothDamage = '';
+                                                toothParodont = [];
+                                                toothEndo = [];
+                                                toothConstructions = [];
+                                                toothTypeController.text = '';
+                                                toothDamageController.text = '';
+                                                toothParodontController.text =
+                                                    '';
+                                                toothEndoController.text = '';
+                                                toothConstructionsController
+                                                    .text = '';
+                                              });
+                                            },
                                           ),
                                         ],
                                       ),
